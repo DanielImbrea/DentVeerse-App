@@ -1,0 +1,29 @@
+{
+  "name": "Dentveerse",
+  "short_name": "Dentveerse",
+  "description": "The Dental Network",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#04231d",
+  "theme_color": "#04231d",
+  "icons": [
+    {
+      "src": "/favicons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

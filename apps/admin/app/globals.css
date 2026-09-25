@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply antialiased bg-background text-text-primary;
+  }
+}
+
+@layer components {
+  .admin-card {
+    @apply bg-surface border border-border rounded-lg shadow-sm;
+  }
+
+  .admin-input {
+    @apply border border-border bg-surface rounded-lg px-4 py-2.5 text-sm text-text-primary placeholder:text-text-secondary/70 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-shadow;
+  }
+
+  .admin-table {
+    @apply w-full text-sm admin-card overflow-hidden;
+  }
+
+  .admin-table thead {
+    @apply bg-background/80;
+  }
+
+  .admin-table th {
+    @apply text-left text-text-secondary font-medium px-5 py-3 border-b border-border;
+  }
+
+  .admin-table td {
+    @apply px-5 py-3.5 border-b border-border last:border-0;
+  }
+
+  .admin-table tbody tr {
+    @apply hover:bg-background/50 transition-colors;
+  }
+
+  .admin-btn-danger {
+    @apply text-sm font-medium text-error hover:text-error/80 transition-colors;
+  }
+
+  .admin-btn-success {
+    @apply text-sm font-medium text-success hover:text-success/80 transition-colors;
+  }
+
+  .admin-btn-primary {
+    @apply text-sm font-medium text-primary hover:text-primary-dark transition-colors;
+  }
+
+  .admin-btn-muted {
+    @apply text-sm font-medium text-text-secondary hover:text-text-primary transition-colors;
+  }
+}

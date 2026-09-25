@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+dist/
+build/
+.expo/
+.turbo/
+
+# env
+.env
+.env.local
+.env.staging
+.env.production
+.env.*.local
+!.env.example
+!.env.staging.example
+!.env.production.example
+
+# supabase
+supabase/.branches
+supabase/.temp
+
+# misc
+.DS_Store
+*.log
+coverage/
+.vscode/*
+!.vscode/extensions.json

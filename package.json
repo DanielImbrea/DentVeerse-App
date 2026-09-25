@@ -1,0 +1,41 @@
+{
+  "name": "dental-platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:unit": "pnpm --filter @dental/utils --filter @dental/api --filter @dental/mobile test",
+    "test:db": "supabase test db",
+    "db:migrate": "supabase db push",
+    "db:reset": "supabase db reset",
+    "db:staging": "bash scripts/supabase-staging-setup.sh",
+    "db:prod-sync": "bash scripts/supabase-staging-setup.sh",
+    "verify:supabase-prod": "bash scripts/verify-supabase-prod-env.sh",
+    "turnstile:secret": "bash scripts/set-turnstile-secret.sh",
+    "db:types": "supabase gen types typescript --local > packages/types/src/supabase.ts"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.0",
+    "typescript": "^5.5.4",
+    "eslint": "^8.57.0",
+    "prettier": "^3.3.3"
+  },
+  "packageManager": "pnpm@9.7.0",
+  "pnpm": {
+    "overrides": {
+      "react": "19.2.3",
+      "react-dom": "19.2.3",
+      "react-native": "0.86.3"
+    }
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

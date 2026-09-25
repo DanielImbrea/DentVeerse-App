@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "paths": {
+      "@dental/types": ["../types/src"]
+    }
+  },
+  "include": ["src"]
+}

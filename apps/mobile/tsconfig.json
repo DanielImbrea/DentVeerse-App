@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": [
+      "react-native"
+    ],
+    "paths": {
+      "@mobile/*": ["./src/*"],
+      "@dental/config/turnstile": ["../../packages/config/turnstile.ts"],
+      "@dental/*": ["../../packages/*/src"]
+    }
+  },
+  "include": [
+    "app",
+    "src",
+    "app.config.ts",
+    "nativewind-env.d.ts"
+  ]
+}

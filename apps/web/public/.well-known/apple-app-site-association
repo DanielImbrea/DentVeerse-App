@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.ro.dentalconnect.app",
+        "paths": ["/auth/*", "/open/*"]
+      }
+    ]
+  }
+}

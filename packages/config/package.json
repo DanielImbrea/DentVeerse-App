@@ -1,0 +1,15 @@
+{
+  "name": "@dental/config",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    "./tokens": "./tokens.json",
+    "./site": "./site.ts",
+    "./turnstile": "./turnstile.ts",
+    "./tailwind-preset": "./tailwind-preset.js",
+    "./eslint-preset": "./eslint-preset.js",
+    "./tsconfig-base": "../../tsconfig.base.json"
+  }
+}

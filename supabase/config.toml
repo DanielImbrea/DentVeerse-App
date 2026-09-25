@@ -1,0 +1,37 @@
+project_id = "dental-platform"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+# Extensions (postgis, pg_trgm, unaccent, uuid-ossp) are enabled in
+# supabase/migrations/0001_baseline_extensions.sql — not via config.toml.
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["dentalconnect://"]
+jwt_expiry = 3600
+enable_signup = true
+
+[auth.email]
+# Local dev: instant session after signup (required for Expo on device — Mailpit links don't work on phone).
+# Re-enable `true` before production deploy.
+enable_confirmations = false
+
+[realtime]
+enabled = true
