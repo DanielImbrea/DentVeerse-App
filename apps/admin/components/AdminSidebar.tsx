@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { s } from '../lib/strings';
 
@@ -22,6 +23,13 @@ export function AdminSidebar({ signOutAction }: { signOutAction: () => Promise<v
   return (
     <aside className="w-64 shrink-0 bg-surface-dark text-white flex flex-col min-h-screen">
       <div className="px-6 py-8 border-b border-white/10">
+        <Image
+          src="/dentveerse-mark.svg"
+          alt="DentVeerse"
+          width={40}
+          height={40}
+          className="h-10 w-10 object-contain mb-3"
+        />
         <p className="font-display text-lg font-semibold tracking-tight">{s.appName}</p>
         <p className="text-white/60 text-xs mt-1">{s.appSubtitle}</p>
       </div>

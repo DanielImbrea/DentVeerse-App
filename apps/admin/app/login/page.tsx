@@ -1,3 +1,4 @@
+import { AdminBrandMark } from '../../components/AdminBrandMark';
 import { signInAction } from './actions';
 import { mapAuthError, s } from '../../lib/strings';
 
@@ -8,9 +9,7 @@ export default function AdminLoginPage({ searchParams }: { searchParams: { error
     <main className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-background via-background to-primary/5">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-white text-2xl mb-4 shadow-lg shadow-primary/20">
-            🦷
-          </div>
+          <AdminBrandMark size={72} className="mx-auto mb-4 h-[72px] w-[72px] drop-shadow-md" />
           <h1 className="font-display text-2xl font-semibold text-text-primary">{s.appName}</h1>
           <p className="text-text-secondary text-sm mt-1">{s.appSubtitle}</p>
         </div>
