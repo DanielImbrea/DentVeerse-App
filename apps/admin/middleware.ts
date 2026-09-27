@@ -20,9 +20,32 @@ import { NextResponse, type NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request: { headers: request.headers } });
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(
+      '[admin middleware] Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in Vercel (Production).'
+    );
+    return response;
+  }
+
+  try {
+    return await runMiddleware(request, response, supabaseUrl, supabaseAnonKey);
+  } catch (error) {
+    console.error('[admin middleware] Session refresh failed:', error);
+    return response;
+  }
+}
+
+async function runMiddleware(
+  request: NextRequest,
+  response: NextResponse,
+  supabaseUrl: string,
+  supabaseAnonKey: string
+) {
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         get(name: string) {
