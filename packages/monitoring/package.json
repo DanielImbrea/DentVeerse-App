@@ -16,7 +16,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@sentry/react-native": "~6.3.0",
     "@sentry/nextjs": "^8.26.0"
   }
 }
