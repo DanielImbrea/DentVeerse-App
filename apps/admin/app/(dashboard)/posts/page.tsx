@@ -6,6 +6,7 @@ import { PageHeader } from '../../../components/PageHeader';
 import { StatusBadge } from '../../../components/StatusBadge';
 import { ActionButton } from '../../../components/ActionButton';
 import { formatDateTime, formatPostStatus, formatPostType, s } from '../../../lib/strings';
+import { toAuditJson } from '../../../lib/auditJson';
 
 export default async function PostsPage() {
   await requireAdmin();
@@ -29,7 +30,7 @@ export default async function PostsPage() {
       action: 'post_hidden',
       target_type: 'posts',
       target_id: postId,
-      before,
+      before: toAuditJson(before),
       after: { status: 'removed' },
     });
 

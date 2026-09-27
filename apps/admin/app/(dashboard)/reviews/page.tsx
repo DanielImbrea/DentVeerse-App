@@ -6,6 +6,7 @@ import { PageHeader } from '../../../components/PageHeader';
 import { StatusBadge } from '../../../components/StatusBadge';
 import { ActionButton } from '../../../components/ActionButton';
 import { formatDateTime, formatReviewStatus, s } from '../../../lib/strings';
+import { toAuditJson } from '../../../lib/auditJson';
 
 export default async function ReviewsPage() {
   await requireAdmin();
@@ -29,7 +30,7 @@ export default async function ReviewsPage() {
       action: 'review_hidden',
       target_type: 'reviews',
       target_id: reviewId,
-      before,
+      before: toAuditJson(before),
       after: { status: 'hidden_by_admin' },
     });
 

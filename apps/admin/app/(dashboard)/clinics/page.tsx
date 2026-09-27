@@ -6,6 +6,7 @@ import { SearchBar } from '../../../components/SearchBar';
 import { StatusBadge, VerifiedBadge } from '../../../components/StatusBadge';
 import { ActionButton } from '../../../components/ActionButton';
 import { formatUserStatus, s } from '../../../lib/strings';
+import { toAuditJson } from '../../../lib/auditJson';
 
 export default async function ClinicsPage({ searchParams }: { searchParams: { q?: string } }) {
   await requireAdmin();
@@ -35,7 +36,7 @@ export default async function ClinicsPage({ searchParams }: { searchParams: { q?
       action: newStatus === 'suspended' ? 'clinic_suspended' : 'clinic_restored',
       target_type: 'clinics',
       target_id: clinicId,
-      before,
+      before: toAuditJson(before),
       after: { status: newStatus },
     });
 

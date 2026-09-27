@@ -6,6 +6,7 @@ import { SearchBar } from '../../../components/SearchBar';
 import { StatusBadge } from '../../../components/StatusBadge';
 import { ActionButton } from '../../../components/ActionButton';
 import { formatAccountType, formatDate, formatUserStatus, s } from '../../../lib/strings';
+import { toAuditJson } from '../../../lib/auditJson';
 
 export default async function UsersPage({ searchParams }: { searchParams: { q?: string } }) {
   await requireAdmin();
@@ -35,7 +36,7 @@ export default async function UsersPage({ searchParams }: { searchParams: { q?: 
       action: newStatus === 'suspended' ? 'user_suspended' : 'user_restored',
       target_type: 'users',
       target_id: userId,
-      before,
+      before: toAuditJson(before),
       after: { status: newStatus },
     });
 

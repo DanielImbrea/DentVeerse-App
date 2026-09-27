@@ -7,6 +7,7 @@ import { StatusBadge } from '../../../components/StatusBadge';
 import { ActionButton } from '../../../components/ActionButton';
 import { formatDateTime, formatReportReason, formatReportTarget, getAdminReportPath, s } from '../../../lib/strings';
 import Link from 'next/link';
+import { toAuditJson } from '../../../lib/auditJson';
 
 export default async function ReportsPage() {
   await requireAdmin();
@@ -40,7 +41,7 @@ export default async function ReportsPage() {
       action: `report_${action}`,
       target_type: before?.target_type ?? 'unknown',
       target_id: before?.target_id ?? null,
-      before,
+      before: toAuditJson(before),
       after: { status: action },
     });
 

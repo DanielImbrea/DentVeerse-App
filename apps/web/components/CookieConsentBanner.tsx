@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createBrowserClient } from '@supabase/ssr';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Database } from '@dental/types';
+import { createWebSupabaseClient } from '../lib/supabase-browser';
 
 const STORAGE_KEY = 'dental_cookie_consent';
 const COOKIE_POLICY_VERSION = '2026-08-19';
@@ -53,10 +54,7 @@ export function CookieConsentBanner() {
     // session; anonymous visitors (the common case on a marketing site)
     // rely on the localStorage record alone, which is sufficient.
     try {
-      const supabase = createBrowserClient<Database>(
-        process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-      );
+      const supabase = createWebSupabaseClient() as unknown as SupabaseClient<Database>;
       const {
         data: { user },
       } = await supabase.auth.getUser();

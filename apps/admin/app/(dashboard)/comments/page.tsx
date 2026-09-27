@@ -6,6 +6,7 @@ import { PageHeader } from '../../../components/PageHeader';
 import { StatusBadge } from '../../../components/StatusBadge';
 import { ActionButton } from '../../../components/ActionButton';
 import { formatCommentStatus, formatDateTime, s } from '../../../lib/strings';
+import { toAuditJson } from '../../../lib/auditJson';
 
 export default async function CommentsPage() {
   await requireAdmin();
@@ -29,7 +30,7 @@ export default async function CommentsPage() {
       action: 'comment_hidden',
       target_type: 'comments',
       target_id: commentId,
-      before,
+      before: toAuditJson(before),
       after: { status: 'removed' },
     });
 
