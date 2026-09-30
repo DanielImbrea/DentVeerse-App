@@ -5,7 +5,7 @@
 | File | Use |
 |------|-----|
 | **`brand/dentveerse-mark.png`** | Icon-only logo — auth screens (`AppLogo`), splash source |
-| **`icon.png`** | App Store / launcher icon (512×512 mark, from brand pack) |
+| **`icon.png`** | iOS/Android launcher + **App Store Connect** (1024×1024, mark on `#FAF9F7`; regen: `node scripts/generate-ios-app-icon.mjs` with `sharp` installed) |
 | **`notification-icon.png`** | Push notification icon (96×96) |
 | **`splash.png`** | Splash screen (mark on light background via Expo `resizeMode: contain`) |
 
