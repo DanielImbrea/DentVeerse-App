@@ -5,7 +5,7 @@
 | File | Use |
 |------|-----|
 | **`brand/dentveerse-mark.png`** | Icon-only logo — auth screens (`AppLogo`), splash source |
-| **`icon.png`** | iOS/Android launcher + **App Store Connect** (1024×1024, mark on `#FAF9F7`; regen: `node scripts/generate-ios-app-icon.mjs` with `sharp` installed) |
+| **`icon.png`** | iOS/Android launcher + App Store (1024×1024, mark only, transparent; regen: `scripts/generate-ios-app-icon.mjs`; optional `ICON_BG=#FAF9F7`) |
 | **`notification-icon.png`** | Push notification icon (96×96) |
 | **`splash.png`** | Splash screen (mark on light background via Expo `resizeMode: contain`) |
 
