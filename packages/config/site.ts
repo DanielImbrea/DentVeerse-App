@@ -10,11 +10,26 @@ export const SITE = {
   brandName: 'DentVeerse',
   appScheme: 'dentalconnect',
   iosBundleId: 'ro.dentalconnect.app',
+  /** Apple Developer Team ID (Plesca Dmitrie org) — public in AASA. */
+  appleTeamId: 'TR36PR6252',
   androidPackage: 'ro.dentalconnect.app',
   themeColor: '#04231d',
   /** Icon-only mark paths (web `public/`). Wordmark logos are optional for marketing only. */
   webMarkSvg: '/dentveerse-mark.svg',
   webOgImage: '/png/og-image-1200x630.png',
+  /** App Store / Play — null until links exist; homepage shows „în curând”. */
+  storeUrls: {
+    ios: null as string | null,
+    android: null as string | null,
+  },
+  legalPaths: {
+    privacy: '/privacy',
+    terms: '/terms',
+    cookies: '/cookie-policy',
+    /** Aliases used on dentveerse.com marketing deploy */
+    privacyRo: '/confidentialitate',
+    termsRo: '/termeni',
+  },
 } as const;
 
 export const AUTH_PATHS = {

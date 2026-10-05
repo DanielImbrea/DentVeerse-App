@@ -2,7 +2,8 @@
 
 > **Site live:** [https://dentveerse.com](https://dentveerse.com)  
 > **Contact:** dentveerse@gmail.com  
-> **Supabase (MVP = producție):** `tfgtpmfzddipeamlxams` — vezi **`docs/20-PASUL-1-SUPABASE-PRODUCTION.md`**
+> **Supabase (MVP = producție):** `tfgtpmfzddipeamlxams` — vezi **`docs/20-PASUL-1-SUPABASE-PRODUCTION.md`**  
+> **Checklist master + pilot clinică:** **`docs/22-CHECKLIST-LANSARE-PILOT.md`** · verificare site: `pnpm verify:live-site`
 
 ---
 
@@ -10,9 +11,10 @@
 
 | Zonă | Status |
 |------|--------|
-| Site marketing | Live (dentveerse.com) |
+| Site marketing | Live (dentveerse.com / www) |
+| Auth web | Live: `/auth/callback`, `/auth/reset-password` pe www |
+| Universal Links (AASA) | **Lipsește pe live** — patch `deploy/dentveerse-live-well-known/` |
 | App mobile | Funcțional pe Expo Go / dev; **nu** încă pe App Store / Play Store |
-| Auth email + reset | Necesită pagini `/auth/callback` și `/auth/reset-password` + env Supabase pe site |
 | Backend | Supabase cloud + migrări în repo |
 
 ---
@@ -37,7 +39,8 @@
 - [ ] Test: signup → email → confirm → redirect în app `dentalconnect://sign-in?confirmed=1`
 - [ ] Test: reset parolă → formular pe site → login app cu parola nouă
 - [ ] Pagini legale: `/privacy`, `/terms`, `/cookie-policy` (conținut juridic de revizuit)
-- [ ] `public/.well-known/apple-app-site-association` — înlocuiește `TEAMID` cu Apple Team ID
+- [x] Team ID client: `TR36PR6252` (în `packages/config/site.ts` + AASA monorepo)
+- [ ] Site live dentveerse.com: patch well-known + `APPLE_TEAM_ID=TR36PR6252` pe Vercel (dacă folosești rute din env)
 - [ ] `assetlinks.json` — SHA256 certificat din EAS/Play Console
 
 ### A3. Mobile env (EAS / build)

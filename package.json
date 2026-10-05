@@ -18,6 +18,7 @@
     "db:staging": "bash scripts/supabase-staging-setup.sh",
     "db:prod-sync": "bash scripts/supabase-staging-setup.sh",
     "verify:supabase-prod": "bash scripts/verify-supabase-prod-env.sh",
+    "verify:live-site": "bash scripts/verify-dentveerse-live.sh",
     "turnstile:secret": "bash scripts/set-turnstile-secret.sh",
     "db:types": "supabase gen types typescript --local > packages/types/src/supabase.ts"
   },

@@ -7,6 +7,7 @@
   "exports": {
     "./tokens": "./tokens.json",
     "./site": "./site.ts",
+    "./universal-links": "./universal-links.ts",
     "./turnstile": "./turnstile.ts",
     "./tailwind-preset": "./tailwind-preset.js",
     "./eslint-preset": "./eslint-preset.js",

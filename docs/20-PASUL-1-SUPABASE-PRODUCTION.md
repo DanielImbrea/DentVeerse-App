@@ -106,3 +106,7 @@ pnpm verify:supabase-prod
 ## Pasul 2 (următor)
 
 **`docs/21-PASUL-2-TURNSTILE-EAS.md`** — Turnstile + EAS secrets + primul build iOS.
+
+## Pasul 3 — checklist complet
+
+**`docs/22-CHECKLIST-LANSARE-PILOT.md`** — lansare, site live, pilot clinică, E2E.
