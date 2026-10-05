@@ -1,13 +1,9 @@
-import type { ExpoConfig } from 'expo/config';
-
-// NOTE (see docs/01-architecture.md §1): once IAP/payments work begins
-// (Monetization Phase M1 — deferred per docs/16 §5/§8), this app can no
-// longer be run via Expo Go; a dev client / EAS build is required because
-// react-native-iap needs native modules. Not relevant yet for MVP phases.
-
+/** @type {import('expo/config').ExpoConfig} */
+// Plain JS so global `eas` CLI can read config (TS file breaks some eas-cli versions).
 const isProduction = process.env.APP_ENV === 'production';
 
-const config: ExpoConfig = {
+const config = {
+  owner: 'eccedentesiast',
   name: 'DentalConnect',
   slug: 'dentalconnect',
   scheme: 'dentalconnect',
@@ -34,14 +30,12 @@ const config: ExpoConfig = {
             NSAllowsArbitraryLoads: true,
             NSAllowsLocalNetworking: true,
           },
-      // Required by expo-location (used in app/(tabs)/discover/map.tsx) —
-      // missing this causes a runtime crash on the location permission
-      // request on iOS. Found during this session's audit.
       NSLocationWhenInUseUsageDescription:
         'DentalConnect uses your location to show nearby clinics and laboratories on the map.',
       NSPhotoLibraryUsageDescription:
         'DentalConnect needs access to your photo library to upload logos, cover images, and portfolio photos.',
-      NSCameraUsageDescription: 'DentalConnect needs camera access to take photos for your profile and portfolio.',
+      NSCameraUsageDescription:
+        'DentalConnect needs camera access to take photos for your profile and portfolio.',
     },
   },
   android: {
@@ -84,9 +78,10 @@ const config: ExpoConfig = {
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL,
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY,
     eas: {
-      projectId: process.env.EXPO_PUBLIC_PROJECT_ID,
+      projectId:
+        process.env.EXPO_PUBLIC_PROJECT_ID ?? '2e28108b-d0fa-461c-ba41-ae369d36b218',
     },
   },
 };
 
-export default config;
+module.exports = config;
