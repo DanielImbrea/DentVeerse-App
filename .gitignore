@@ -9,6 +9,10 @@ build/
 .expo/
 .turbo/
 
+# Expo prebuild local (EAS builds in cloud; not for git)
+apps/mobile/ios/
+apps/mobile/android/
+
 # env
 .env
 .env.local
