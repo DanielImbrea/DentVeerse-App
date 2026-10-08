@@ -50,13 +50,23 @@ export default function SignInScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
-        contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 }}
-        contentContainerClassName="flex-grow px-xl justify-center gap-lg"
+        contentContainerStyle={{
+          paddingTop: insets.top + 12,
+          paddingBottom: Math.max(insets.bottom, 16) + 28,
+        }}
+        contentContainerClassName="px-xl gap-md pb-sm"
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <AuthBrandHeader title={t('app.name')} subtitle={t('app.subtitle')} />
+        <AuthBrandHeader
+          title={t('app.name')}
+          subtitle={t('app.subtitle')}
+          className="mb-0"
+          logoSize={80}
+          titleClassName="text-xl"
+        />
 
-        <View className="bg-surface border border-border rounded-2xl p-xl gap-lg shadow-sm">
+        <View className="bg-surface border border-border rounded-2xl p-lg gap-md shadow-sm">
           <View>
             <Text className="text-xl font-semibold text-text-primary">{t('auth.signIn.title')}</Text>
             <Text className="text-sm text-text-secondary mt-1">{t('auth.signIn.subtitle')}</Text>
@@ -121,15 +131,15 @@ export default function SignInScreen() {
               <Text className="text-sm text-primary font-medium">{t('auth.signIn.createAccount')}</Text>
             </Link>
           </View>
-        </View>
 
-        <View className="flex-row items-center gap-md my-xl">
-          <View className="flex-1 h-px bg-border" />
-          <Text className="text-sm text-text-secondary">{t('auth.signIn.or')}</Text>
-          <View className="flex-1 h-px bg-border" />
-        </View>
+          <View className="flex-row items-center gap-md pt-1">
+            <View className="flex-1 h-px bg-border" />
+            <Text className="text-xs text-text-secondary">{t('auth.signIn.or')}</Text>
+            <View className="flex-1 h-px bg-border" />
+          </View>
 
-        <SocialSignInSection mode="sign-in" />
+          <SocialSignInSection mode="sign-in" />
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );

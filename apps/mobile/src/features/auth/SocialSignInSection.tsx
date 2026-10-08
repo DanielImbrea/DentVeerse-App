@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { Button } from '@dental/ui';
+import { GoogleSignInButton } from '@mobile/features/auth/GoogleSignInButton';
 import {
   recordConsent,
   signInWithAppleIdToken,
@@ -170,11 +170,10 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
   }
 
   return (
-    <View className="gap-sm">
+    <View className="gap-2.5">
       {googleEnabled ? (
-        <Button
+        <GoogleSignInButton
           label={t('auth.signIn.google')}
-          variant="secondary"
           loading={busy === 'google'}
           disabled={busy !== null && busy !== 'google'}
           onPress={() => void handleGooglePress()}
@@ -185,11 +184,9 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
           buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
           buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
           cornerRadius={12}
-          style={{ width: '100%', height: 48 }}
+          style={{ width: '100%', height: 48, maxHeight: 48 }}
           onPress={() => void handleApplePress()}
         />
-      ) : Platform.OS === 'ios' ? (
-        <Button label={t('auth.signIn.apple')} variant="secondary" disabled onPress={() => {}} />
       ) : null}
       {errorMessage ? (
         <View className="bg-error/10 border border-error/20 rounded-xl px-md py-3">

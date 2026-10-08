@@ -124,14 +124,18 @@ export default function SignUpScreen() {
   return (
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
-        contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 24 }}
-        contentContainerClassName="px-xl gap-lg"
+        contentContainerStyle={{
+          paddingTop: insets.top + 12,
+          paddingBottom: Math.max(insets.bottom, 16) + 28,
+        }}
+        contentContainerClassName="px-xl gap-md"
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <AuthBrandHeader
-          logoSize={96}
-          className="items-center mb-sm"
-          titleClassName="text-2xl"
+          logoSize={80}
+          className="items-center mb-0"
+          titleClassName="text-xl"
           subtitleClassName="text-sm"
           title="Creează cont"
           subtitle="Alege tipul de cont — decizia este definitivă"
@@ -173,7 +177,7 @@ export default function SignUpScreen() {
           </Text>
         </View>
 
-        <View className="bg-surface border border-border rounded-2xl p-xl gap-md">
+        <View className="bg-surface border border-border rounded-2xl p-lg gap-md">
           <View className="gap-1.5">
             <Text className="text-sm font-medium text-text-primary">Email</Text>
             <AppTextInput
@@ -238,19 +242,19 @@ export default function SignUpScreen() {
           </Text>
 
           <Button label="Continuă" onPress={handleSignUp} loading={loading} disabled={!canSubmit} />
-        </View>
 
-        <View className="flex-row items-center gap-md">
-          <View className="flex-1 h-px bg-border" />
-          <Text className="text-sm text-text-secondary">{t('auth.signIn.or')}</Text>
-          <View className="flex-1 h-px bg-border" />
-        </View>
+          <View className="flex-row items-center gap-md pt-1">
+            <View className="flex-1 h-px bg-border" />
+            <Text className="text-xs text-text-secondary">{t('auth.signIn.or')}</Text>
+            <View className="flex-1 h-px bg-border" />
+          </View>
 
-        <SocialSignInSection
-          mode="sign-up"
-          accountType={accountType}
-          onNeedsAccountType={() => setErrorMessage(t('auth.signUp.pickAccountType'))}
-        />
+          <SocialSignInSection
+            mode="sign-up"
+            accountType={accountType}
+            onNeedsAccountType={() => setErrorMessage(t('auth.signUp.pickAccountType'))}
+          />
+        </View>
 
         <Link href="/(auth)/sign-in" asChild>
           <Pressable className="items-center">
