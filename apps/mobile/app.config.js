@@ -20,10 +20,8 @@ const config = {
     bundleIdentifier: 'ro.dentalconnect.app',
     supportsTablet: false,
     associatedDomains: ['applinks:dentveerse.com', 'applinks:www.dentveerse.com'],
-    config: {
-      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-    },
     infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
       NSAppTransportSecurity: isProduction
         ? { NSAllowsLocalNetworking: true }
         : {
@@ -52,11 +50,6 @@ const config = {
         category: ['BROWSABLE', 'DEFAULT'],
       },
     ],
-    config: {
-      googleMaps: {
-        apiKey: process.env.GOOGLE_MAPS_API_KEY,
-      },
-    },
   },
   plugins: [
     'expo-router',
@@ -71,6 +64,13 @@ const config = {
       {
         icon: './src/assets/notification-icon.png',
         color: '#0F6B66',
+      },
+    ],
+    [
+      'react-native-maps',
+      {
+        iosGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+        androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
       },
     ],
   ],
