@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Platform, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { AppleSignInButton } from '@mobile/features/auth/AppleSignInButton';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { GoogleSignInButton } from '@mobile/features/auth/GoogleSignInButton';
@@ -170,7 +171,7 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
   }
 
   return (
-    <View className="gap-2 pb-0.5">
+    <View className="w-full items-center gap-2.5 pb-0.5">
       {googleEnabled ? (
         <GoogleSignInButton
           label={t('auth.signIn.google')}
@@ -180,11 +181,10 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
         />
       ) : null}
       {appleEnabled ? (
-        <AppleAuthentication.AppleAuthenticationButton
-          buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
-          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={10}
-          style={{ width: '100%', height: 44, maxHeight: 44 }}
+        <AppleSignInButton
+          label={t('auth.signIn.apple')}
+          loading={busy === 'apple'}
+          disabled={busy !== null && busy !== 'apple'}
           onPress={() => void handleApplePress()}
         />
       ) : null}

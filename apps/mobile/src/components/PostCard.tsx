@@ -103,8 +103,8 @@ export function PostCard({
     !mediaUrl &&
     post.post_media[0].processing_status !== 'failed';
 
-  function openPost() {
-    router.push(`/post/${post.id}`);
+  function openPost(focusComments = false) {
+    router.push(focusComments ? `/post/${post.id}?focus=comments` : `/post/${post.id}`);
   }
 
   function handleReactionPress() {
@@ -177,7 +177,7 @@ export function PostCard({
         <EngagementButton
           icon="chatbubble-outline"
           label={String(post.comment_count)}
-          onPress={openPost}
+          onPress={() => openPost(true)}
           accessibilityLabel="Comentarii"
         />
         <EngagementButton

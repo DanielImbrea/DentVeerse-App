@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { FlatList, Image, Pressable, ScrollView, Text, View, useWindowDimensions } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { BeforeAfterSlider } from './BeforeAfterSlider';
 
@@ -103,6 +105,7 @@ export interface PortfolioGalleryViewerProps {
  */
 export function PortfolioGalleryViewer({ media, initialIndex = 0, onClose }: PortfolioGalleryViewerProps) {
   const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
 
   // Group adjacent before/after pairs into single gallery "slides".
@@ -121,14 +124,39 @@ export function PortfolioGalleryViewer({ media, initialIndex = 0, onClose }: Por
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000000' }}>
-      <Pressable
-        onPress={onClose}
-        style={{ position: 'absolute', top: 48, right: 24, zIndex: 10, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 10,
+          paddingTop: insets.top + 8,
+          paddingHorizontal: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
       >
-        <Text style={{ color: '#FFFFFF', fontSize: 24 }}>×</Text>
-      </Pressable>
+        <Pressable
+          onPress={onClose}
+          className="flex-row items-center gap-0.5 active:opacity-70"
+          accessibilityRole="button"
+          accessibilityLabel="Înapoi"
+        >
+          <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+          <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '500' }}>Înapoi</Text>
+        </Pressable>
+        <Pressable
+          onPress={onClose}
+          style={{ width: 40, height: 40, alignItems: 'center', justifyContent: 'center' }}
+          accessibilityLabel="Închide"
+        >
+          <Ionicons name="close" size={26} color="#FFFFFF" />
+        </Pressable>
+      </View>
 
-      <View style={{ position: 'absolute', top: 52, left: 0, right: 0, zIndex: 10, alignItems: 'center' }}>
+      <View style={{ position: 'absolute', top: insets.top + 44, left: 0, right: 0, zIndex: 10, alignItems: 'center' }}>
         <Text style={{ color: '#FFFFFF', fontSize: 13 }}>
           {currentIndex + 1} / {slides.length}
         </Text>

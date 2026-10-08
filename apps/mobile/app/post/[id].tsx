@@ -1,6 +1,17 @@
-import React, { useState } from 'react';
-import { Alert, FlatList, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
@@ -43,13 +54,16 @@ function PostVideoPlayer({ url }: { url: string }) {
 }
 
 export default function PostDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, focus } = useLocalSearchParams<{ id: string; focus?: string }>();
   const { width: screenWidth } = useWindowDimensions();
   const mediaWidth = screenWidth - 32;
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const listRef = useRef<FlatList>(null);
   const [draft, setDraft] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(focus === 'comments');
   const queryClient = useQueryClient();
   const { data: myOrg } = useMyOrg();
 
@@ -101,6 +115,16 @@ export default function PostDetailScreen() {
     queryFn: () => listComments(supabase, id as string),
     enabled: !!id,
   });
+
+  useEffect(() => {
+    if (focus === 'comments') setCommentsOpen(true);
+  }, [focus]);
+
+  useEffect(() => {
+    if (commentsOpen && commentsData?.data?.length) {
+      requestAnimationFrame(() => listRef.current?.scrollToEnd({ animated: true }));
+    }
+  }, [commentsOpen, commentsData?.data?.length]);
 
   async function handleReactionPress() {
     if (!id) return;
@@ -303,10 +327,15 @@ export default function PostDetailScreen() {
             {post.like_count}
           </Text>
         </Pressable>
-        <View className="flex-row items-center gap-1.5">
+        <Pressable
+          onPress={() => setCommentsOpen(true)}
+          className="flex-row items-center gap-1.5 active:opacity-70"
+          accessibilityRole="button"
+          accessibilityLabel="Comentarii"
+        >
           <Ionicons name="chatbubble-outline" size={20} color="#6B7280" />
           <Text className="text-base text-text-secondary">{post.comment_count}</Text>
-        </View>
+        </Pressable>
         <Pressable onPress={handleToggleSave} className="flex-row items-center gap-1.5" accessibilityLabel="Salvează postarea">
           <Ionicons
             name={engagement?.saved ? 'bookmark' : 'bookmark-outline'}
@@ -342,12 +371,25 @@ export default function PostDetailScreen() {
         />
       ) : null}
 
-      <Text className="text-sm font-semibold text-text-primary">Comentarii</Text>
+      {!commentsOpen ? (
+        <Pressable
+          onPress={() => setCommentsOpen(true)}
+          className="rounded-2xl border border-border bg-surface px-md py-3 active:opacity-90"
+        >
+          <Text className="text-sm font-medium text-text-primary">
+            {post.comment_count > 0
+              ? `${post.comment_count} ${post.comment_count === 1 ? 'comentariu' : 'comentarii'} · Atinge pentru a vedea`
+              : 'Comentarii · Atinge pentru a scrie'}
+          </Text>
+        </Pressable>
+      ) : (
+        <Text className="text-sm font-semibold text-text-primary pt-sm">Comentarii</Text>
+      )}
     </View>
   );
 
   return (
-    <ScreenShell showBack title="Postare" scroll keyboardShouldPersistTaps="handled">
+    <ScreenShell showBack title="Postare" scroll={false} contentClassName="flex-1 px-lg pb-0 w-full">
       <ReactionPicker
         visible={pickerOpen}
         currentReaction={engagement?.reaction ?? null}
@@ -355,35 +397,57 @@ export default function PostDetailScreen() {
         onRemove={handleRemoveReaction}
         onClose={() => setPickerOpen(false)}
       />
-      <FlatList
-        data={comments}
-        keyExtractor={(item) => item.id}
-        ListHeaderComponent={header}
-        scrollEnabled={false}
-        ListEmptyComponent={<Text className="text-sm text-text-secondary py-md">Niciun comentariu încă.</Text>}
-        renderItem={({ item }) => {
-          const profile = item.public_profiles as { first_name?: string | null; last_name?: string | null } | null;
-          const authorName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Utilizator';
-          return (
-            <View className="border-b border-border pb-sm mb-sm">
-              <Text className="text-sm font-medium text-text-primary">{authorName}</Text>
-              <Text className="text-base text-text-primary mt-1">{item.content}</Text>
-            </View>
-          );
-        }}
-      />
-
-      <View className="flex-row items-center gap-sm pt-md">
-        <AppTextInput
-          value={draft}
-          onChangeText={setDraft}
-          placeholder="Scrie un comentariu…"
-          className="flex-1 rounded-full h-11 bg-surface"
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={insets.top + 56}
+      >
+        <FlatList
+          ref={listRef}
+          className="flex-1"
+          data={commentsOpen ? comments : []}
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={header}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{ paddingBottom: commentsOpen ? 12 : insets.bottom + 16 }}
+          ListEmptyComponent={
+            commentsOpen ? (
+              <Text className="text-sm text-text-secondary py-md">Niciun comentariu încă.</Text>
+            ) : null
+          }
+          renderItem={({ item }) => {
+            const profile = item.public_profiles as { first_name?: string | null; last_name?: string | null } | null;
+            const authorName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Utilizator';
+            return (
+              <View className="border-b border-border pb-sm mb-sm">
+                <Text className="text-sm font-medium text-text-primary">{authorName}</Text>
+                <Text className="text-base text-text-primary mt-1">{item.content}</Text>
+              </View>
+            );
+          }}
         />
-        <Pressable onPress={handleAddComment} className="bg-primary rounded-full px-lg py-sm" disabled={!draft.trim()}>
-          <Text className="text-base text-white">Trimite</Text>
-        </Pressable>
-      </View>
+
+        {commentsOpen ? (
+          <View
+            className="flex-row items-center gap-sm pt-sm border-t border-border bg-background"
+            style={{ paddingBottom: Math.max(insets.bottom, 12) }}
+          >
+            <AppTextInput
+              value={draft}
+              onChangeText={setDraft}
+              placeholder="Scrie un comentariu…"
+              className="flex-1 rounded-full h-11 bg-surface"
+            />
+            <Pressable
+              onPress={handleAddComment}
+              className="bg-primary rounded-full px-lg py-sm min-h-[44px] justify-center"
+              disabled={!draft.trim()}
+            >
+              <Text className="text-base text-white font-medium">Trimite</Text>
+            </Pressable>
+          </View>
+        ) : null}
+      </KeyboardAvoidingView>
     </ScreenShell>
   );
 }

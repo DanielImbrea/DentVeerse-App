@@ -39,9 +39,9 @@ export function OrgPublicProfileHero({
       </View>
 
       {description ? (
-        <View className="w-full rounded-2xl border border-border bg-surface p-lg">
+        <View className="w-full rounded-2xl border border-border bg-surface px-md py-md">
           <Text className="text-xs font-semibold text-text-secondary uppercase tracking-wide mb-sm">Despre</Text>
-          <Text className="text-base text-text-primary leading-7 w-full" style={{ width: '100%' }}>
+          <Text className="text-base text-text-primary leading-7 self-stretch" style={{ width: '100%', maxWidth: '100%' }}>
             {description}
           </Text>
         </View>

@@ -59,9 +59,9 @@ export default function SignInScreen() {
         <AuthBrandHeader
           title={t('app.name')}
           subtitle={t('app.subtitle')}
-          className="mb-0"
-          logoSize={72}
-          titleClassName="text-lg"
+          className="items-center w-full mb-sm"
+          logoSize={80}
+          titleClassName="text-xl"
           subtitleClassName="text-sm"
         />
 
@@ -120,7 +120,12 @@ export default function SignInScreen() {
             </View>
           ) : null}
 
-          <Button label={t('auth.signIn.submit')} onPress={handleSignIn} loading={loading} />
+          <Button
+            label={t('auth.signIn.submit')}
+            onPress={handleSignIn}
+            loading={loading}
+            className="w-full self-stretch min-h-[48px] px-md"
+          />
 
           <View className="flex-row justify-between">
             <Link href="/(auth)/forgot-password">

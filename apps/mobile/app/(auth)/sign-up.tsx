@@ -132,8 +132,8 @@ export default function SignUpScreen() {
       >
         <AuthBrandHeader
           logoSize={72}
-          className="items-center mb-0"
-          titleClassName="text-xl"
+          className="items-center w-full mb-sm"
+          titleClassName="text-xl text-center"
           subtitleClassName="text-sm"
           title="Creează cont"
           subtitle="Alege tipul de cont — decizia este definitivă"

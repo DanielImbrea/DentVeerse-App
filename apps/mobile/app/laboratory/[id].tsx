@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Pressable, Text, View, Image } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { useLocalSearchParams, Link } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { getLaboratoryById, listLaboratoryServices, listOwnerPortfolio, listFollowers } from '@dental/api';
@@ -8,6 +8,7 @@ import { Badge, ErrorState, SkeletonRow } from '@dental/ui';
 import { ScreenShell } from '@mobile/components/ScreenShell';
 import { OrgContactBar } from '@mobile/features/profile/OrgContactBar';
 import { OrgPublicProfileHero } from '@mobile/features/profile/OrgPublicProfileHero';
+import { OrgPortfolioSection } from '@mobile/features/profile/OrgPortfolioSection';
 import { supabase } from '@mobile/lib/supabase';
 
 export default function LaboratoryProfileScreen() {
@@ -98,32 +99,7 @@ export default function LaboratoryProfileScreen() {
           </View>
         ) : null}
 
-        {portfolio.length > 0 ? (
-          <View className="gap-sm w-full rounded-2xl border border-border bg-surface p-lg">
-            <Text className="text-base font-semibold text-text-primary">Portofoliu</Text>
-            <View className="flex-row flex-wrap gap-xs">
-              {portfolio.slice(0, 6).map((p: { id: string; portfolio_media?: Array<{ media_type: string; storage_path: string; thumbnail_url?: string | null }> }) => (
-                <Link key={p.id} href={`/portfolio-item/${p.id}`} asChild>
-                  <Pressable>
-                    {p.portfolio_media?.[0] ? (
-                      <Image
-                        source={{
-                          uri:
-                            p.portfolio_media[0].media_type === 'video'
-                              ? p.portfolio_media[0].thumbnail_url ?? undefined
-                              : supabase.storage.from('portfolio').getPublicUrl(p.portfolio_media[0].storage_path).data.publicUrl,
-                        }}
-                        className="w-20 h-20 rounded-md bg-border"
-                      />
-                    ) : (
-                      <View className="w-20 h-20 rounded-md bg-border" />
-                    )}
-                  </Pressable>
-                </Link>
-              ))}
-            </View>
-          </View>
-        ) : null}
+        <OrgPortfolioSection ownerType="laboratory" ownerId={lab.id} orgName={lab.name} items={portfolio} />
       </View>
     </ScreenShell>
   );

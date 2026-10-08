@@ -37,14 +37,16 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={variant === 'primary' ? '#FFFFFF' : '#0F6B66'} />
       ) : (
-        <Text className={labelClassName(variant, isDisabled)}>{label}</Text>
+        <Text className={`${labelClassName(variant, isDisabled)} text-center px-1`} numberOfLines={1} adjustsFontSizeToFit>
+          {label}
+        </Text>
       )}
     </Pressable>
   );
 }
 
 function buttonClassName(variant: ButtonVariant, isDisabled: boolean): string {
-  const base = 'flex-row items-center justify-center rounded-md px-lg py-md min-h-[44px]';
+  const base = 'flex-row items-center justify-center rounded-xl px-lg py-3.5 min-h-[48px] w-full';
   const opacity = isDisabled ? 'opacity-50' : 'active:opacity-80';
   const variants: Record<ButtonVariant, string> = {
     primary: 'bg-primary',

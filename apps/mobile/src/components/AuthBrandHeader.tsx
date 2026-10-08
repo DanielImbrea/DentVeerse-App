@@ -22,10 +22,10 @@ export function AuthBrandHeader({
   subtitleClassName = 'text-base',
 }: AuthBrandHeaderProps) {
   return (
-    <View className={className ?? 'items-center mb-xl'}>
-      <AppLogo size={logoSize} className="mb-md" />
+    <View className={className ?? 'items-center mb-xl w-full'}>
+      <AppLogo size={logoSize} className="mb-md self-center" />
       <Text
-        className={`font-semibold tracking-tight text-foreground ${titleClassName}`}
+        className={`font-semibold tracking-tight text-center text-foreground ${titleClassName}`}
         style={{ color: tokens.color.textPrimary }}
       >
         {title}
