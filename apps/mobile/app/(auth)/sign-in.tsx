@@ -14,6 +14,7 @@ import { supabase } from '@mobile/lib/supabase';
 import { AppTextInput } from '@mobile/components/AppTextInput';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
 import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
+import { authScrollContentPadding } from '@mobile/features/auth/authScreenLayout';
 
 export default function SignInScreen() {
   const { t } = useTranslation();
@@ -50,11 +51,8 @@ export default function SignInScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
-        contentContainerStyle={{
-          paddingTop: insets.top + 12,
-          paddingBottom: Math.max(insets.bottom, 16) + 28,
-        }}
-        contentContainerClassName="px-xl gap-md pb-sm"
+        contentContainerStyle={authScrollContentPadding(insets)}
+        contentContainerClassName="px-xl gap-sm"
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -62,14 +60,15 @@ export default function SignInScreen() {
           title={t('app.name')}
           subtitle={t('app.subtitle')}
           className="mb-0"
-          logoSize={80}
-          titleClassName="text-xl"
+          logoSize={72}
+          titleClassName="text-lg"
+          subtitleClassName="text-sm"
         />
 
-        <View className="bg-surface border border-border rounded-2xl p-lg gap-md shadow-sm">
+        <View className="bg-surface border border-border rounded-2xl p-md gap-sm shadow-sm">
           <View>
-            <Text className="text-xl font-semibold text-text-primary">{t('auth.signIn.title')}</Text>
-            <Text className="text-sm text-text-secondary mt-1">{t('auth.signIn.subtitle')}</Text>
+            <Text className="text-lg font-semibold text-text-primary">{t('auth.signIn.title')}</Text>
+            <Text className="text-sm text-text-secondary mt-0.5">{t('auth.signIn.subtitle')}</Text>
           </View>
 
           {emailConfirmed ? (
@@ -86,8 +85,8 @@ export default function SignInScreen() {
             </View>
           ) : null}
 
-          <View className="gap-md">
-            <View className="gap-1.5">
+          <View className="gap-sm">
+            <View className="gap-1">
               <Text className="text-sm font-medium text-text-primary">{t('auth.signIn.email')}</Text>
               <AppTextInput
                 value={email}
@@ -101,7 +100,7 @@ export default function SignInScreen() {
               />
             </View>
 
-            <View className="gap-1.5">
+            <View className="gap-1">
               <Text className="text-sm font-medium text-text-primary">{t('auth.signIn.password')}</Text>
               <AppTextInput
                 value={password}
@@ -132,7 +131,7 @@ export default function SignInScreen() {
             </Link>
           </View>
 
-          <View className="flex-row items-center gap-md pt-1">
+          <View className="flex-row items-center gap-md pt-0.5">
             <View className="flex-1 h-px bg-border" />
             <Text className="text-xs text-text-secondary">{t('auth.signIn.or')}</Text>
             <View className="flex-1 h-px bg-border" />

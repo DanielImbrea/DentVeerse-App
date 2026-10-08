@@ -80,13 +80,16 @@ export function OrgContactBar({ orgType, orgId, orgName, ownerUserId, showProfil
       <View className="flex-row gap-sm">
         <Pressable
           onPress={handleFollowToggle}
-          className={`flex-1 rounded-2xl py-3.5 items-center border ${isFollowing ? 'bg-primary/10 border-primary' : 'border-primary'}`}
+          className={`flex-1 min-h-[52px] rounded-2xl py-3.5 items-center justify-center border ${isFollowing ? 'bg-primary/10 border-primary' : 'border-primary'}`}
         >
           <Text className={`text-base font-semibold ${isFollowing ? 'text-primary' : 'text-primary'}`}>
             {isFollowing ? 'Urmărești' : 'Urmărește'}
           </Text>
         </Pressable>
-        <Pressable onPress={handleMessage} className="flex-1 bg-primary rounded-2xl py-3.5 items-center active:opacity-90">
+        <Pressable
+          onPress={handleMessage}
+          className="flex-1 min-h-[52px] bg-primary rounded-2xl py-3.5 items-center justify-center active:opacity-90"
+        >
           <Text className="text-base font-semibold text-white">Mesaj</Text>
         </Pressable>
       </View>

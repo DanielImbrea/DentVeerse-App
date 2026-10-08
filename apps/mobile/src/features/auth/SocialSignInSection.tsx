@@ -170,7 +170,7 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
   }
 
   return (
-    <View className="gap-2.5">
+    <View className="gap-2 pb-0.5">
       {googleEnabled ? (
         <GoogleSignInButton
           label={t('auth.signIn.google')}
@@ -183,8 +183,8 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
         <AppleAuthentication.AppleAuthenticationButton
           buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
           buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={12}
-          style={{ width: '100%', height: 48, maxHeight: 48 }}
+          cornerRadius={10}
+          style={{ width: '100%', height: 44, maxHeight: 44 }}
           onPress={() => void handleApplePress()}
         />
       ) : null}

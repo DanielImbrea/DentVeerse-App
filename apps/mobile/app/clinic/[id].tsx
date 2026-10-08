@@ -13,6 +13,7 @@ import { track } from '@dental/analytics';
 import { Badge, ErrorState, SkeletonRow } from '@dental/ui';
 import { ScreenShell } from '@mobile/components/ScreenShell';
 import { OrgContactBar } from '@mobile/features/profile/OrgContactBar';
+import { OrgPublicProfileHero } from '@mobile/features/profile/OrgPublicProfileHero';
 import { supabase } from '@mobile/lib/supabase';
 import { usePermissions } from '@mobile/features/auth/usePermissions';
 
@@ -94,37 +95,31 @@ export default function ClinicProfileScreen() {
 
   return (
     <ScreenShell scroll showBack title={clinic.name} subtitle={clinic.city ?? undefined}>
-      <View className="gap-md">
-        <View className="flex-row items-center gap-md">
-          {clinic.logo_url ? (
-            <Image source={{ uri: clinic.logo_url }} className="w-16 h-16 rounded-full" />
-          ) : (
-            <View className="w-16 h-16 rounded-full bg-border items-center justify-center">
-              <Text className="text-2xl">🦷</Text>
-            </View>
-          )}
-          <View className="flex-1">
-            <View className="flex-row gap-xs flex-wrap">
+      <View className="w-full gap-lg">
+        <OrgPublicProfileHero
+          logoUrl={clinic.logo_url}
+          fallbackEmoji="🦷"
+          badges={
+            <>
               {clinic.is_verified ? <Badge label="Verificat" variant="verified" /> : null}
               {clinic.open_for_collaboration ? <Badge label="Deschis colaborări" variant="openForCollaboration" /> : null}
-            </View>
-            <Text className="text-sm text-text-secondary mt-2">
-              ★ {clinic.rating_avg.toFixed(1)} · {clinic.rating_count} recenzii · {followerCount} urmăritori
-            </Text>
-          </View>
-        </View>
+            </>
+          }
+          statsLine={`★ ${clinic.rating_avg.toFixed(1)} · ${clinic.rating_count} recenzii · ${followerCount} urmăritori`}
+          description={clinic.description}
+        />
 
-        {clinic.description ? <Text className="text-base text-text-primary leading-6">{clinic.description}</Text> : null}
-
-        <OrgContactBar
+        <View className="w-full rounded-2xl border border-border bg-surface p-lg">
+          <OrgContactBar
           orgType="clinic"
           orgId={clinic.id}
           orgName={clinic.name}
           ownerUserId={clinic.owner_user_id}
-        />
+          />
+        </View>
 
         {services.length > 0 ? (
-          <View className="gap-sm">
+          <View className="gap-sm w-full rounded-2xl border border-border bg-surface p-lg">
             <Text className="text-base font-semibold text-text-primary">Servicii</Text>
             <View className="flex-row flex-wrap gap-xs">
               {services.map((s: { id: string; custom_title?: string | null; services?: { label_ro?: string } }) => (
@@ -135,7 +130,7 @@ export default function ClinicProfileScreen() {
         ) : null}
 
         {portfolio.length > 0 ? (
-          <View className="gap-sm">
+          <View className="gap-sm w-full rounded-2xl border border-border bg-surface p-lg">
             <Text className="text-base font-semibold text-text-primary">Portofoliu</Text>
             <View className="flex-row flex-wrap gap-xs">
               {portfolio.slice(0, 6).map((p: { id: string; portfolio_media?: Array<{ media_type: string; storage_path: string; thumbnail_url?: string | null }> }) => (
@@ -161,7 +156,7 @@ export default function ClinicProfileScreen() {
           </View>
         ) : null}
 
-        <View className="gap-sm">
+        <View className="gap-sm w-full rounded-2xl border border-border bg-surface p-lg">
           <Text className="text-base font-semibold text-text-primary">Recenzii pacienți</Text>
           {reviews.length > 0 ? (
             reviews.slice(0, 5).map((r: { id: string; rating: number; comment?: string | null }) => (

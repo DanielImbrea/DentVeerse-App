@@ -74,9 +74,9 @@ export default function DiscoverScreen() {
       </View>
 
       <Link href="/(tabs)/discover/map" asChild>
-        <Pressable className="flex-row items-center justify-center gap-sm border border-primary/30 bg-primary/5 rounded-xl active:opacity-80">
-          <Ionicons name="map-outline" size={18} color="#0F6B66" />
-          <Text className="font-body text-body font-medium text-primary">Vezi pe hartă</Text>
+        <Pressable className="flex-row items-center justify-center gap-sm min-h-[52px] py-3.5 px-lg border border-primary/35 bg-primary/10 rounded-2xl active:opacity-85">
+          <Ionicons name="map" size={20} color="#0F6B66" />
+          <Text className="text-base font-semibold text-primary">Vezi pe hartă</Text>
         </Pressable>
       </Link>
 

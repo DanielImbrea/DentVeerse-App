@@ -22,7 +22,7 @@ export function ScreenShell({
   centerContent = false,
   showBack = false,
   children,
-  contentClassName = 'px-lg pb-lg gap-md',
+  contentClassName = 'px-lg pb-lg gap-md w-full',
   keyboardShouldPersistTaps,
 }: ScreenShellProps) {
   const router = useRouter();

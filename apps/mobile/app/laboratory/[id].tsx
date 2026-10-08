@@ -7,6 +7,7 @@ import { track } from '@dental/analytics';
 import { Badge, ErrorState, SkeletonRow } from '@dental/ui';
 import { ScreenShell } from '@mobile/components/ScreenShell';
 import { OrgContactBar } from '@mobile/features/profile/OrgContactBar';
+import { OrgPublicProfileHero } from '@mobile/features/profile/OrgPublicProfileHero';
 import { supabase } from '@mobile/lib/supabase';
 
 export default function LaboratoryProfileScreen() {
@@ -67,35 +68,27 @@ export default function LaboratoryProfileScreen() {
 
   return (
     <ScreenShell scroll showBack title={lab.name} subtitle={lab.city ?? undefined}>
-      <View className="gap-md">
-        <View className="flex-row items-center gap-md">
-          {lab.logo_url ? (
-            <Image source={{ uri: lab.logo_url }} className="w-16 h-16 rounded-full" />
-          ) : (
-            <View className="w-16 h-16 rounded-full bg-border items-center justify-center">
-              <Text className="text-2xl">🧪</Text>
-            </View>
-          )}
-          <View className="flex-1">
-            <View className="flex-row gap-xs flex-wrap">
+      <View className="w-full gap-lg">
+        <OrgPublicProfileHero
+          logoUrl={lab.logo_url}
+          fallbackEmoji="🧪"
+          badges={
+            <>
               {lab.is_verified ? <Badge label="Verificat" variant="verified" /> : null}
               {lab.open_for_collaboration ? <Badge label="Deschis colaborări" variant="openForCollaboration" /> : null}
               {lab.collaboration_zone ? <Badge label={lab.collaboration_zone} variant="neutral" /> : null}
-            </View>
-            <Text className="text-sm text-text-secondary mt-2">
-              {lab.years_experience ? `${lab.years_experience} ani experiență · ` : ''}
-              {lab.team_size ? `${lab.team_size} persoane · ` : ''}
-              {followerCount} urmăritori
-            </Text>
-          </View>
+            </>
+          }
+          statsLine={`${lab.years_experience ? `${lab.years_experience} ani experiență · ` : ''}${lab.team_size ? `${lab.team_size} persoane · ` : ''}${followerCount} urmăritori`}
+          description={lab.description}
+        />
+
+        <View className="w-full rounded-2xl border border-border bg-surface p-lg">
+          <OrgContactBar orgType="laboratory" orgId={lab.id} orgName={lab.name} ownerUserId={lab.owner_user_id} />
         </View>
 
-        {lab.description ? <Text className="text-base text-text-primary leading-6">{lab.description}</Text> : null}
-
-        <OrgContactBar orgType="laboratory" orgId={lab.id} orgName={lab.name} ownerUserId={lab.owner_user_id} />
-
         {services.length > 0 ? (
-          <View className="gap-sm">
+          <View className="gap-sm w-full rounded-2xl border border-border bg-surface p-lg">
             <Text className="text-base font-semibold text-text-primary">Servicii</Text>
             <View className="flex-row flex-wrap gap-xs">
               {services.map((s: { id: string; custom_title?: string | null; services?: { label_ro?: string } }) => (
@@ -106,7 +99,7 @@ export default function LaboratoryProfileScreen() {
         ) : null}
 
         {portfolio.length > 0 ? (
-          <View className="gap-sm">
+          <View className="gap-sm w-full rounded-2xl border border-border bg-surface p-lg">
             <Text className="text-base font-semibold text-text-primary">Portofoliu</Text>
             <View className="flex-row flex-wrap gap-xs">
               {portfolio.slice(0, 6).map((p: { id: string; portfolio_media?: Array<{ media_type: string; storage_path: string; thumbnail_url?: string | null }> }) => (

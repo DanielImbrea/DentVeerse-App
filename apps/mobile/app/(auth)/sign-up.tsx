@@ -18,6 +18,7 @@ import { useAuthStore } from '@mobile/stores/authStore';
 import { CaptchaWidget } from '@mobile/features/auth/CaptchaWidget';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
 import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
+import { authScrollContentPadding } from '@mobile/features/auth/authScreenLayout';
 import { useTranslation } from 'react-i18next';
 
 const TERMS_VERSION = '2026-08-12';
@@ -124,16 +125,13 @@ export default function SignUpScreen() {
   return (
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
-        contentContainerStyle={{
-          paddingTop: insets.top + 12,
-          paddingBottom: Math.max(insets.bottom, 16) + 28,
-        }}
-        contentContainerClassName="px-xl gap-md"
+        contentContainerStyle={authScrollContentPadding(insets)}
+        contentContainerClassName="px-xl gap-sm"
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         <AuthBrandHeader
-          logoSize={80}
+          logoSize={72}
           className="items-center mb-0"
           titleClassName="text-xl"
           subtitleClassName="text-sm"
@@ -177,7 +175,7 @@ export default function SignUpScreen() {
           </Text>
         </View>
 
-        <View className="bg-surface border border-border rounded-2xl p-lg gap-md">
+        <View className="bg-surface border border-border rounded-2xl p-md gap-sm">
           <View className="gap-1.5">
             <Text className="text-sm font-medium text-text-primary">Email</Text>
             <AppTextInput
