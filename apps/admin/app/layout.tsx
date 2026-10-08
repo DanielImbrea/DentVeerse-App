@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-body' });
 const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-display' });
 
 export const metadata: Metadata = {
-  title: 'DentalConnect — Administrare',
+  title: 'DentVeerse — Administrare',
   robots: { index: false, follow: false },
 };
 

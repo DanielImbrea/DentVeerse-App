@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { supabase } from '@mobile/lib/supabase';
 import { AppTextInput } from '@mobile/components/AppTextInput';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
+import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
 
 export default function SignInScreen() {
   const { t } = useTranslation();
@@ -128,11 +129,7 @@ export default function SignInScreen() {
           <View className="flex-1 h-px bg-border" />
         </View>
 
-        <View className="gap-sm opacity-60">
-          <Button label={t('auth.signIn.google')} variant="secondary" disabled onPress={() => {}} />
-          <Button label={t('auth.signIn.apple')} variant="secondary" disabled onPress={() => {}} />
-          <Text className="text-xs text-text-secondary text-center">{t('auth.signIn.socialSoon')}</Text>
-        </View>
+        <SocialSignInSection mode="sign-in" />
       </ScrollView>
     </KeyboardAvoidingView>
   );

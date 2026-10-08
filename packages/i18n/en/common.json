@@ -1,5 +1,5 @@
 {
-  "app.name": "DentalConnect",
+  "app.name": "DentVeerse",
   "app.subtitle": "Romania's dental network",
   "auth.signIn.title": "Sign in",
   "auth.signIn.subtitle": "Sign in to your account",
@@ -12,6 +12,9 @@
   "auth.signIn.google": "Continue with Google",
   "auth.signIn.apple": "Continue with Apple",
   "auth.signIn.socialSoon": "Coming soon",
+  "auth.signIn.socialNotConfigured": "Google/Apple: set EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID on EAS and enable providers in Supabase (see docs/23-ACTIVARE-GOOGLE-APPLE-LOGIN.md).",
+  "auth.signIn.socialFailed": "Social sign-in failed. Try again.",
+  "auth.signUp.pickAccountType": "Choose Patient, Clinic, or Laboratory first.",
   "auth.signIn.networkError": "Cannot reach the server. Check Wi‑Fi and that Supabase is running on your Mac.",
   "action.save": "Save",
   "action.cancel": "Cancel",

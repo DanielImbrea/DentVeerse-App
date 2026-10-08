@@ -83,7 +83,7 @@ export default function DiscoverScreen() {
       {debouncedQuery.trim().length < 2 ? (
         <View className="bg-surface border border-border rounded-2xl p-xl mt-sm">
           <EmptyState
-            title="Caută în DentalConnect"
+            title="Caută în DentVeerse"
             message="Introdu minim 2 caractere: clinică, laborator, oraș sau specializare."
           />
         </View>

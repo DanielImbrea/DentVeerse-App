@@ -1,4 +1,4 @@
-# DentalConnect — Monorepo
+# DentVeerse — Monorepo
 
 Implementation of the architecture specified in `docs/` (see `docs/README.md` for the full
 document index). This is the **Phase 1 scaffold** per `docs/13-roadmap.md` — folder structure,

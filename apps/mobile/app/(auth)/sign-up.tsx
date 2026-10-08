@@ -17,6 +17,8 @@ import { AppTextInput } from '@mobile/components/AppTextInput';
 import { useAuthStore } from '@mobile/stores/authStore';
 import { CaptchaWidget } from '@mobile/features/auth/CaptchaWidget';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
+import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
+import { useTranslation } from 'react-i18next';
 
 const TERMS_VERSION = '2026-08-12';
 const TURNSTILE_SITE_KEY = process.env.EXPO_PUBLIC_TURNSTILE_SITE_KEY ?? '';
@@ -29,6 +31,7 @@ const ACCOUNT_OPTIONS: { type: AccountType; label: string; icon: string }[] = [
 ];
 
 export default function SignUpScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const setSession = useAuthStore((s) => s.setSession);
@@ -236,6 +239,18 @@ export default function SignUpScreen() {
 
           <Button label="Continuă" onPress={handleSignUp} loading={loading} disabled={!canSubmit} />
         </View>
+
+        <View className="flex-row items-center gap-md">
+          <View className="flex-1 h-px bg-border" />
+          <Text className="text-sm text-text-secondary">{t('auth.signIn.or')}</Text>
+          <View className="flex-1 h-px bg-border" />
+        </View>
+
+        <SocialSignInSection
+          mode="sign-up"
+          accountType={accountType}
+          onNeedsAccountType={() => setErrorMessage(t('auth.signUp.pickAccountType'))}
+        />
 
         <Link href="/(auth)/sign-in" asChild>
           <Pressable className="items-center">

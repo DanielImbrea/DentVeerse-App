@@ -15,6 +15,8 @@ build/
 .env.staging
 .env.production
 .env.*.local
+.apple-supabase-secret-jwt.txt
+AuthKey_*.p8
 !.env.example
 !.env.staging.example
 !.env.production.example

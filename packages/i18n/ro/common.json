@@ -1,5 +1,5 @@
 {
-  "app.name": "DentalConnect",
+  "app.name": "DentVeerse",
   "app.subtitle": "Rețeaua stomatologică din România",
   "auth.signIn.title": "Autentificare",
   "auth.signIn.subtitle": "Conectează-te la contul tău",
@@ -12,6 +12,9 @@
   "auth.signIn.google": "Continuă cu Google",
   "auth.signIn.apple": "Continuă cu Apple",
   "auth.signIn.socialSoon": "În curând",
+  "auth.signIn.socialNotConfigured": "Google/Apple: configurează EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID în EAS și providerii în Supabase (vezi docs/23-ACTIVARE-GOOGLE-APPLE-LOGIN.md).",
+  "auth.signIn.socialFailed": "Autentificarea socială a eșuat. Încearcă din nou.",
+  "auth.signUp.pickAccountType": "Alege mai întâi Pacient, Clinică sau Laborator.",
   "auth.signIn.networkError": "Nu mă pot conecta la server. Verifică Wi‑Fi și că Supabase rulează pe Mac.",
   "action.save": "Salvează",
   "action.cancel": "Anulează",

@@ -4,7 +4,7 @@ const isProduction = process.env.APP_ENV === 'production';
 
 const config = {
   owner: 'eccedentesiast',
-  name: 'DentalConnect',
+  name: 'DentVeerse',
   slug: 'dentalconnect',
   scheme: 'dentalconnect',
   version: '0.1.0',
@@ -29,11 +29,11 @@ const config = {
             NSAllowsLocalNetworking: true,
           },
       NSLocationWhenInUseUsageDescription:
-        'DentalConnect uses your location to show nearby clinics and laboratories on the map.',
+        'DentVeerse uses your location to show nearby clinics and laboratories on the map.',
       NSPhotoLibraryUsageDescription:
-        'DentalConnect needs access to your photo library to upload logos, cover images, and portfolio photos.',
+        'DentVeerse needs access to your photo library to upload logos, cover images, and portfolio photos.',
       NSCameraUsageDescription:
-        'DentalConnect needs camera access to take photos for your profile and portfolio.',
+        'DentVeerse needs camera access to take photos for your profile and portfolio.',
     },
   },
   android: {

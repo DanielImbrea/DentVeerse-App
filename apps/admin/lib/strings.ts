@@ -1,7 +1,7 @@
 /** Romanian UI copy for the admin panel (MVP default locale). */
 
 export const s = {
-  appName: 'DentalConnect',
+  appName: 'DentVeerse',
   appSubtitle: 'Panou administrare',
 
   nav: {

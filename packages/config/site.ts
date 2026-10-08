@@ -5,7 +5,7 @@ export const SITE = {
   wwwUrl: 'https://www.dentveerse.com',
   contactEmail: 'dentveerse@gmail.com',
   /** In-app product name */
-  productName: 'DentalConnect',
+  productName: 'DentVeerse',
   /** Brand / domain name */
   brandName: 'DentVeerse',
   appScheme: 'dentalconnect',
