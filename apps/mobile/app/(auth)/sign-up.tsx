@@ -9,21 +9,18 @@ import {
 import { Link, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@dental/ui';
-import { signUpWithEmail, recordConsent, verifyCaptcha, setAccountType } from '@dental/api';
+import { signUpWithEmail, recordConsent, setAccountType } from '@dental/api';
 import { track } from '@dental/analytics';
 import type { AccountType } from '@dental/types';
 import { supabase } from '@mobile/lib/supabase';
 import { AppTextInput } from '@mobile/components/AppTextInput';
 import { useAuthStore } from '@mobile/stores/authStore';
-import { CaptchaWidget } from '@mobile/features/auth/CaptchaWidget';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
 import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
 import { authScrollContentPadding } from '@mobile/features/auth/authScreenLayout';
 import { useTranslation } from 'react-i18next';
 
 const TERMS_VERSION = '2026-08-12';
-const TURNSTILE_SITE_KEY = process.env.EXPO_PUBLIC_TURNSTILE_SITE_KEY ?? '';
-const DEV_SIGNUP_WITHOUT_CAPTCHA = __DEV__ && !TURNSTILE_SITE_KEY;
 
 const ACCOUNT_OPTIONS: { type: AccountType; label: string; icon: string }[] = [
   { type: 'patient', label: 'Pacient', icon: '👤' },
@@ -39,7 +36,6 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [accountType, setAccountTypeChoice] = useState<AccountType | null>(null);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(DEV_SIGNUP_WITHOUT_CAPTCHA ? 'dev-bypass' : null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -50,24 +46,9 @@ export default function SignUpScreen() {
       return;
     }
 
-    if (!DEV_SIGNUP_WITHOUT_CAPTCHA && !captchaToken) {
-      setErrorMessage('Completează verificarea anti-bot.');
-      return;
-    }
-
     setLoading(true);
     setErrorMessage(null);
     setSuccessMessage(null);
-
-    if (!DEV_SIGNUP_WITHOUT_CAPTCHA) {
-      const isHuman = await verifyCaptcha(supabase, captchaToken!, { action: 'signup' }).catch(() => false);
-      if (!isHuman) {
-        setLoading(false);
-        setCaptchaToken(null);
-        setErrorMessage('Verificarea a eșuat. Încearcă din nou.');
-        return;
-      }
-    }
 
     const { data, error } = await signUpWithEmail(supabase, email.trim(), password);
     if (error || !data.user) {
@@ -120,7 +101,7 @@ export default function SignUpScreen() {
     }
   }
 
-  const canSubmit = (DEV_SIGNUP_WITHOUT_CAPTCHA || !!captchaToken) && !!email && !!password && !!accountType;
+  const canSubmit = !!email && !!password && !!accountType;
 
   return (
     <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -200,29 +181,6 @@ export default function SignUpScreen() {
             />
           </View>
 
-          {TURNSTILE_SITE_KEY ? (
-            <CaptchaWidget
-              siteKey={TURNSTILE_SITE_KEY}
-              onToken={(t) => {
-                setCaptchaToken(t);
-                setErrorMessage(null);
-              }}
-              onError={() => {
-                setCaptchaToken(null);
-                setErrorMessage('Widget-ul de verificare nu s-a încărcat.');
-              }}
-              onExpire={() => setCaptchaToken(null)}
-            />
-          ) : DEV_SIGNUP_WITHOUT_CAPTCHA ? (
-            <Text className="text-xs text-text-secondary text-center bg-background rounded-xl p-sm">
-              Mod dev: CAPTCHA dezactivat local — OK doar pentru teste.
-            </Text>
-          ) : (
-            <Text className="text-sm text-error text-center">
-              CAPTCHA neconfigurat — înregistrarea e blocată până setăm EXPO_PUBLIC_TURNSTILE_SITE_KEY.
-            </Text>
-          )}
-
           {successMessage ? (
             <View className="bg-success/10 border border-success/25 rounded-xl px-md py-3">
               <Text className="text-sm text-success text-center">{successMessage}</Text>
@@ -239,7 +197,7 @@ export default function SignUpScreen() {
             Continuând, accepți Termenii și Politica de confidențialitate.
           </Text>
 
-          <Button label="Continuă" onPress={handleSignUp} loading={loading} disabled={!canSubmit} />
+          <Button label="Continuă" onPress={handleSignUp} loading={loading} disabled={!canSubmit} className="w-full self-stretch" />
 
           <View className="flex-row items-center gap-md pt-1">
             <View className="flex-1 h-px bg-border" />

@@ -171,7 +171,7 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
   }
 
   return (
-    <View className="w-full items-center gap-2.5 pb-0.5">
+    <View className="w-full gap-3 pb-0.5">
       {googleEnabled ? (
         <GoogleSignInButton
           label={t('auth.signIn.google')}

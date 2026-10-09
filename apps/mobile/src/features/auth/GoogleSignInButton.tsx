@@ -1,7 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
-
-const GOOGLE_BLUE = '#4285F4';
+import { ActivityIndicator, Image, Pressable, Text } from 'react-native';
 
 type Props = {
   label: string;
@@ -10,7 +8,7 @@ type Props = {
   disabled?: boolean;
 };
 
-/** Layout aliniat cu „Sign in with Google” (tile alb + zonă albastră). */
+/** Stil outline (fundal alb, bordură discretă) — aliniat cu ghidurile Google sign-in. */
 export function GoogleSignInButton({ label, onPress, loading, disabled }: Props) {
   const inactive = disabled || loading;
 
@@ -19,12 +17,11 @@ export function GoogleSignInButton({ label, onPress, loading, disabled }: Props)
       onPress={onPress}
       disabled={inactive}
       accessibilityRole="button"
-      className={`h-12 w-full flex-row overflow-hidden rounded-[10px] ${inactive ? 'opacity-60' : 'active:opacity-92'}`}
-      style={{ backgroundColor: GOOGLE_BLUE }}
+      className={`h-12 w-full flex-row items-center rounded-lg border border-[#747775] bg-white ${inactive ? 'opacity-60' : 'active:opacity-90'}`}
     >
-      <View className="w-[48px] h-full items-center justify-center bg-white">
+      <View className="w-12 items-center justify-center pl-1">
         {loading ? (
-          <ActivityIndicator size="small" color={GOOGLE_BLUE} />
+          <ActivityIndicator size="small" color="#4285F4" />
         ) : (
           <Image
             source={require('../../assets/google-g-logo.png')}
@@ -34,12 +31,9 @@ export function GoogleSignInButton({ label, onPress, loading, disabled }: Props)
           />
         )}
       </View>
-      <View className="flex-1 items-center justify-center px-2">
-        <Text className="text-[15px] font-medium text-white" numberOfLines={1}>
-          {label}
-        </Text>
-      </View>
-      <View className="w-[48px]" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" />
+      <Text className="flex-1 text-center text-[15px] font-medium text-[#1f1f1f] pr-12" numberOfLines={1}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
