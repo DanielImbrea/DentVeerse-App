@@ -15,13 +15,15 @@ import { registerDevice, subscribeToGlobalPresence } from '@dental/api';
 import { isOnboardingComplete, getOnboardingPath } from '@mobile/lib/onboarding';
 import { getNotificationRoute } from '@mobile/lib/notificationRoutes';
 import { loadAppFonts } from '@mobile/lib/fonts';
+import { isSupabaseConfigured } from '@mobile/lib/supabase';
+import { SupabaseConfigErrorScreen } from '@mobile/components/SupabaseConfigErrorScreen';
 
-// Initialize error monitoring as early as possible, before any other
-// module has a chance to throw. See packages/monitoring/src/mobile.ts for
-// privacy considerations (PII scrubbing) and required EXPO_PUBLIC_SENTRY_DSN
-// configuration.
-initMobileMonitoring();
-initAnalytics();
+try {
+  initMobileMonitoring();
+  initAnalytics();
+} catch (err) {
+  console.warn('[startup] Monitoring/analytics init failed:', err);
+}
 // Defaults to disabled per packages/analytics/src/mobile.ts's consent note
 // — flip to `true` once the actual consent-prompt UI exists and the person
 // has opted in. Left enabled-by-default=false here deliberately rather
@@ -142,6 +144,18 @@ function useNotificationRouting(userId: string | null) {
  * left for Cursor to tighten if desired).
  */
 export default function RootLayout() {
+  if (!isSupabaseConfigured) {
+    return (
+      <SafeAreaProvider>
+        <SupabaseConfigErrorScreen />
+      </SafeAreaProvider>
+    );
+  }
+
+  return <RootLayoutApp />;
+}
+
+function RootLayoutApp() {
   const setSession = useAuthStore((s) => s.setSession);
   const setOnboarded = useAuthStore((s) => s.setOnboarded);
   const accountType = useAuthStore((s) => s.accountType);
@@ -188,10 +202,16 @@ export default function RootLayout() {
       setOnboarded(onboarded);
     }
 
-    supabase.auth.getSession().then(async ({ data }) => {
-      await resolveSession(data.session?.user.id ?? null);
-      setInitializing(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(async ({ data }) => {
+        await resolveSession(data.session?.user.id ?? null);
+      })
+      .catch(async (err) => {
+        console.warn('[auth] getSession failed — clearing local session hint:', err);
+        await resolveSession(null);
+      })
+      .finally(() => setInitializing(false));
 
     const { data: subscription } = supabase.auth.onAuthStateChange(async (_event, session) => {
       await resolveSession(session?.user.id ?? null);
