@@ -2,6 +2,38 @@
 // Plain JS so global `eas` CLI can read config (TS file breaks some eas-cli versions).
 const isProduction = process.env.APP_ENV === 'production';
 
+/** Empty/undefined key + react-native-maps plugin can crash iOS at launch (GMSServices). */
+const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY?.trim() ?? '';
+
+const plugins = [
+  'expo-router',
+  'expo-apple-authentication',
+  'expo-localization',
+  'expo-video',
+  '@react-native-community/datetimepicker',
+  'expo-image',
+  'expo-status-bar',
+  [
+    'expo-notifications',
+    {
+      icon: './src/assets/notification-icon.png',
+      color: '#0F6B66',
+    },
+  ],
+];
+
+if (googleMapsApiKey) {
+  plugins.push([
+    'react-native-maps',
+    {
+      iosGoogleMapsApiKey: googleMapsApiKey,
+      androidGoogleMapsApiKey: googleMapsApiKey,
+    },
+  ]);
+} else {
+  plugins.push('react-native-maps');
+}
+
 const config = {
   owner: 'eccedentesiast',
   name: 'DentVeerse',
@@ -51,29 +83,7 @@ const config = {
       },
     ],
   },
-  plugins: [
-    'expo-router',
-    'expo-apple-authentication',
-    'expo-localization',
-    'expo-video',
-    '@react-native-community/datetimepicker',
-    'expo-image',
-    'expo-status-bar',
-    [
-      'expo-notifications',
-      {
-        icon: './src/assets/notification-icon.png',
-        color: '#0F6B66',
-      },
-    ],
-    [
-      'react-native-maps',
-      {
-        iosGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-        androidGoogleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
-      },
-    ],
-  ],
+  plugins,
   extra: {
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL,
     supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? process.env.SUPABASE_ANON_KEY,

@@ -31,23 +31,27 @@ export function initMobileMonitoring() {
   const Sentry = getSentry();
   if (!Sentry) return;
 
-  Sentry.init({
-    dsn,
-    environment: process.env.APP_ENV ?? 'development',
-    sendDefaultPii: false,
-    tracesSampleRate: 0.2,
-    beforeSend(event) {
-      if (event.request?.headers) {
-        delete event.request.headers['Authorization'];
-        delete event.request.headers['authorization'];
-      }
-      if (event.user) {
-        delete event.user.email;
-        delete event.user.ip_address;
-      }
-      return event;
-    },
-  });
+  try {
+    Sentry.init({
+      dsn,
+      environment: process.env.APP_ENV ?? 'development',
+      sendDefaultPii: false,
+      tracesSampleRate: 0.2,
+      beforeSend(event) {
+        if (event.request?.headers) {
+          delete event.request.headers['Authorization'];
+          delete event.request.headers['authorization'];
+        }
+        if (event.user) {
+          delete event.user.email;
+          delete event.user.ip_address;
+        }
+        return event;
+      },
+    });
+  } catch (err) {
+    console.warn('[monitoring] Sentry.init failed — disabled.', err);
+  }
 }
 
 export function getMobileSentry(): SentryModule | null {
