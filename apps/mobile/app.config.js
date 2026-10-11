@@ -22,11 +22,12 @@ const plugins = [
   ],
 ];
 
+// iOS: Apple Maps only (no GMSServices — bad/restricted keys crash at launch).
+// Android: Google Maps when key is set on EAS (Maps SDK for Android in Google Cloud).
 if (googleMapsApiKey) {
   plugins.push([
     'react-native-maps',
     {
-      iosGoogleMapsApiKey: googleMapsApiKey,
       androidGoogleMapsApiKey: googleMapsApiKey,
     },
   ]);

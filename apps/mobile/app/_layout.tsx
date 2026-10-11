@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import 'react-native-reanimated';
 import '../global.css';
 import '@mobile/lib/i18n';
 import React, { useEffect, useState } from 'react';
@@ -210,7 +211,13 @@ function RootLayoutApp() {
         await resolveSession(data.session?.user.id ?? null);
       })
       .catch(async (err) => {
-        console.warn('[auth] getSession failed — clearing local session hint:', err);
+        console.warn('[auth] getSession failed — clearing stored session:', err);
+        try {
+          const keys = await AsyncStorage.getAllKeys();
+          await AsyncStorage.multiRemove(keys.filter((k) => k.includes('auth-token') || k.includes('supabase')));
+        } catch {
+          /* ignore */
+        }
         await resolveSession(null);
       })
       .finally(() => setInitializing(false));
