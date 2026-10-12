@@ -16,6 +16,7 @@ import { supabase } from '@mobile/lib/supabase';
 import { useAuthStore } from '@mobile/stores/authStore';
 import { registerDevice, subscribeToGlobalPresence } from '@dental/api';
 import { isOnboardingComplete, getOnboardingPath } from '@mobile/lib/onboarding';
+import { hasCompletedAccountTypeSelection } from '@mobile/lib/accountTypeSelection';
 import { getNotificationRoute } from '@mobile/lib/notificationRoutes';
 import { loadAppFonts } from '@mobile/lib/fonts';
 import { isSupabaseConfigured } from '@mobile/lib/supabase';
@@ -161,8 +162,10 @@ export default function RootLayout() {
 function RootLayoutApp() {
   const setSession = useAuthStore((s) => s.setSession);
   const setOnboarded = useAuthStore((s) => s.setOnboarded);
+  const setAccountTypeSelected = useAuthStore((s) => s.setAccountTypeSelected);
   const accountType = useAuthStore((s) => s.accountType);
   const isOnboarded = useAuthStore((s) => s.isOnboarded);
+  const accountTypeSelected = useAuthStore((s) => s.accountTypeSelected);
   const userId = useAuthStore((s) => s.userId);
   const [initializing, setInitializing] = useState(true);
   const [fontsReady, setFontsReady] = useState(false);
@@ -183,12 +186,16 @@ function RootLayoutApp() {
       if (!userId) {
         setSession(null, null);
         setOnboarded(false);
+        setAccountTypeSelected(false);
         return;
       }
 
       const { data: userRow } = await supabase.from('users').select('account_type').eq('id', userId).single();
       const resolvedType = userRow?.account_type ?? null;
       setSession(userId, resolvedType);
+
+      const typeSelected = await hasCompletedAccountTypeSelection(supabase, userId, resolvedType);
+      setAccountTypeSelected(typeSelected);
 
       if (resolvedType) {
         identifyUser(userId, resolvedType);
@@ -198,11 +205,17 @@ function RootLayoutApp() {
 
       if (!resolvedType) {
         setOnboarded(false);
+        setAccountTypeSelected(false);
         return;
       }
 
       const onboarded = await isOnboardingComplete(supabase, userId, resolvedType);
       setOnboarded(onboarded);
+
+      if (onboarded || typeSelected) {
+        queryClient.invalidateQueries({ queryKey: ['feed-weighted'] });
+        queryClient.invalidateQueries({ queryKey: ['my-post-reactions'] });
+      }
     }
 
     supabase.auth
@@ -227,7 +240,7 @@ function RootLayoutApp() {
     });
 
     return () => subscription.subscription.unsubscribe();
-  }, [setSession, setOnboarded]);
+  }, [setSession, setOnboarded, setAccountTypeSelected]);
 
   useEffect(() => {
     if (initializing) return;
@@ -240,12 +253,14 @@ function RootLayoutApp() {
       router.replace('/(auth)/sign-in');
     } else if (userId && !accountType && !inAuthGroup) {
       router.replace('/(auth)/choose-account-type');
+    } else if (userId && accountType && !accountTypeSelected && !inAuthGroup) {
+      router.replace('/(auth)/choose-account-type');
     } else if (userId && accountType && !isOnboarded && !inOnboardingGroup) {
       void getOnboardingPath(supabase, userId, accountType).then((path) => router.replace(path as never));
     } else if (userId && accountType && isOnboarded && (inAuthGroup || inOnboardingGroup)) {
       router.replace('/(tabs)/home');
     }
-  }, [initializing, accountType, isOnboarded, segments, router]);
+  }, [initializing, accountType, accountTypeSelected, isOnboarded, segments, router]);
 
   return (
     <SafeAreaProvider>

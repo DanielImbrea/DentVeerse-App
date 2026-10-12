@@ -27,9 +27,8 @@ export function AccountConnectedEmail({ compact }: AccountConnectedEmailProps) {
         </Text>
         {appleRelay ? (
           <Text className="text-sm text-text-secondary mt-2 leading-5">
-            Cont creat cu Sign in with Apple. Apple poate ascunde adresa reală și afișează un relay
-            (@privaterelay.appleid.com) — nu e Yahoo/Gmail tău, dar mesajele ajung în inbox-ul Apple ID.
-            Pentru emailul personal, alege „Partajează emailul meu” la următoarea autentificare Apple sau în
+            Apple folosește adresa relay de mai sus când ai ales „Ascunde-mi emailul”. Pentru adresa personală
+            (Yahoo/Gmail), alege „Partajează emailul meu” la Sign in with Apple — doar la prima conectare sau din
             Setări Apple ID → Sign in with Apple → DentVeerse.
           </Text>
         ) : null}

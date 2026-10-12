@@ -27,6 +27,8 @@ import {
 } from '@dental/api';
 import { POST_REACTION_META, type PostReactionType } from '@dental/utils';
 import { ReactionPicker, reactionDisplayEmoji } from '@mobile/components/ReactionPicker';
+import { PostReactionLikersModal } from '@mobile/components/PostReactionLikersModal';
+import { useAuthStore } from '@mobile/stores/authStore';
 import { Badge, Button, ErrorState, SkeletonRow } from '@dental/ui';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { ScreenShell } from '@mobile/components/ScreenShell';
@@ -63,8 +65,10 @@ export default function PostDetailScreen() {
   const [draft, setDraft] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [likersOpen, setLikersOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(focus === 'comments');
   const queryClient = useQueryClient();
+  const userId = useAuthStore((s) => s.userId);
   const { data: myOrg } = useMyOrg();
 
   const { data: postData, isLoading, isError, refetch } = useQuery({
@@ -99,9 +103,10 @@ export default function PostDetailScreen() {
   });
 
   const { data: engagement, refetch: refetchEngagement } = useQuery({
-    queryKey: ['post-engagement', id],
+    queryKey: ['post-engagement', userId, id],
     queryFn: () => getPostEngagementState(supabase, id as string),
-    enabled: !!id,
+    enabled: !!id && !!userId,
+    staleTime: 0,
   });
 
   const { data: reactionBreakdown } = useQuery({
@@ -128,7 +133,7 @@ export default function PostDetailScreen() {
 
   async function handleReactionPress() {
     if (!id) return;
-    if (engagement?.reaction === 'appreciate') await removePostReaction(supabase, id);
+    if (engagement?.reaction) await removePostReaction(supabase, id);
     else await setPostReaction(supabase, id, 'appreciate');
     refetch();
     refetchEngagement();
@@ -317,7 +322,10 @@ export default function PostDetailScreen() {
       <View className="flex-row items-center gap-md py-sm border-y border-border">
         <Pressable
           onPress={handleReactionPress}
-          onLongPress={() => setPickerOpen(true)}
+          onLongPress={() => {
+            if ((post.like_count ?? 0) > 0) setLikersOpen(true);
+            else setPickerOpen(true);
+          }}
           delayLongPress={280}
           className="flex-row items-center gap-1.5"
           accessibilityLabel="Reacție"
@@ -397,6 +405,7 @@ export default function PostDetailScreen() {
         onRemove={handleRemoveReaction}
         onClose={() => setPickerOpen(false)}
       />
+      {id ? <PostReactionLikersModal postId={id} visible={likersOpen} onClose={() => setLikersOpen(false)} /> : null}
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

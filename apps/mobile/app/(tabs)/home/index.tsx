@@ -1,6 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchHomeFeedPage, fetchMyPostReactions, removePostReaction, savePost, setPostReaction, unsavePost } from '@dental/api';
 import { track } from '@dental/analytics';
@@ -11,21 +12,27 @@ import { FeedFilterBar, DEFAULT_FEED_FILTERS, type FeedFiltersState } from '@mob
 import { PostCard } from '@mobile/components/PostCard';
 import { supabase } from '@mobile/lib/supabase';
 import { usePermissions } from '@mobile/features/auth/usePermissions';
+import { useAuthStore } from '@mobile/stores/authStore';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const { canPost } = usePermissions();
+  const userId = useAuthStore((s) => s.userId);
+  const sessionReady = !!userId;
   const [filters, setFilters] = useState<FeedFiltersState>(DEFAULT_FEED_FILTERS);
 
-  const { data: myReactionsRes } = useQuery({
-    queryKey: ['my-post-reactions'],
+  const { data: myReactionsRes, refetch: refetchReactions } = useQuery({
+    queryKey: ['my-post-reactions', userId],
     queryFn: () => fetchMyPostReactions(supabase),
+    enabled: sessionReady,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
   const myReactions = myReactionsRes?.data ?? new Map<string, PostReactionType>();
 
-  const { data: savedPostIds = new Set<string>() } = useQuery({
-    queryKey: ['my-saved-posts'],
+  const { data: savedPostIds = new Set<string>(), refetch: refetchSaved } = useQuery({
+    queryKey: ['my-saved-posts', userId],
     queryFn: async () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return new Set<string>();
@@ -35,10 +42,12 @@ export default function HomeScreen() {
         .eq('user_id', userData.user.id);
       return new Set((data ?? []).map((row) => row.post_id));
     },
+    enabled: sessionReady,
+    staleTime: 0,
   });
 
   const { data: followCountData } = useQuery({
-    queryKey: ['feed-follow-count'],
+    queryKey: ['feed-follow-count', userId],
     queryFn: async () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) return 0;
@@ -48,6 +57,7 @@ export default function HomeScreen() {
         .eq('follower_user_id', userData.user.id);
       return count ?? 0;
     },
+    enabled: sessionReady,
   });
 
   const feedParams = useMemo(
@@ -61,9 +71,11 @@ export default function HomeScreen() {
   );
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['feed-weighted', feedParams],
+    queryKey: ['feed-weighted', userId, feedParams],
     queryFn: ({ pageParam }) => fetchHomeFeedPage(supabase, { ...feedParams, cursor: pageParam }),
     initialPageParam: null as string | null,
+    enabled: sessionReady,
+    staleTime: 0,
     getNextPageParam: (lastPage) => {
       const rows = lastPage.data;
       if (!rows || rows.length === 0) return undefined;
@@ -71,27 +83,33 @@ export default function HomeScreen() {
     },
   });
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!sessionReady) return;
+      void refetch();
+      void refetchReactions();
+      void refetchSaved();
+    }, [sessionReady, refetch, refetchReactions, refetchSaved])
+  );
+
   const posts = data?.pages.flatMap((page) => page.data ?? []) ?? [];
 
   async function handleSetReaction(postId: string, reaction: PostReactionType) {
     await setPostReaction(supabase, postId, reaction);
     track({ name: 'post_engagement', properties: { post_id: postId, interaction: reaction } });
-    queryClient.invalidateQueries({ queryKey: ['my-post-reactions'] });
-    refetch();
+    await queryClient.invalidateQueries({ queryKey: ['my-post-reactions', userId] });
   }
 
   async function handleRemoveReaction(postId: string) {
     await removePostReaction(supabase, postId);
-    queryClient.invalidateQueries({ queryKey: ['my-post-reactions'] });
-    refetch();
+    await queryClient.invalidateQueries({ queryKey: ['my-post-reactions', userId] });
   }
 
   async function handleToggleSave(postId: string) {
     if (savedPostIds.has(postId)) await unsavePost(supabase, postId);
     else await savePost(supabase, postId);
     track({ name: 'post_engagement', properties: { post_id: postId, interaction: 'save' } });
-    queryClient.invalidateQueries({ queryKey: ['my-saved-posts'] });
-    refetch();
+    await queryClient.invalidateQueries({ queryKey: ['my-saved-posts', userId] });
   }
 
   const subtitle =
@@ -99,7 +117,7 @@ export default function HomeScreen() {
       ? 'Postări ordonate cronologic, de la cele mai noi.'
       : 'Prioritar de la conturile urmărite, plus descoperiri din platformă.';
 
-  if (isLoading) {
+  if (!sessionReady || isLoading) {
     return (
       <View className="flex-1 bg-background px-lg" style={{ paddingTop: insets.top + 16 }}>
         <Text className="text-2xl font-semibold text-text-primary mb-md">Acasă</Text>

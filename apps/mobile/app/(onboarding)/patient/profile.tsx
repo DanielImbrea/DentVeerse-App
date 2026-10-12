@@ -7,14 +7,17 @@ import { supabase } from '@mobile/lib/supabase';
 import { AppTextInput } from '@mobile/components/AppTextInput';
 import { DateOfBirthField } from '@mobile/components/DateOfBirthField';
 import { getPatientProfileGap } from '@mobile/lib/onboarding';
+import { markAccountTypeSelected } from '@mobile/lib/accountTypeSelection';
 import { useAuthStore } from '@mobile/stores/authStore';
 import { track } from '@dental/analytics';
+import { AccountConnectedEmail } from '@mobile/components/AccountConnectedEmail';
 
 export default function PatientOnboardingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const userId = useAuthStore((s) => s.userId);
   const setOnboarded = useAuthStore((s) => s.setOnboarded);
+  const setAccountTypeSelected = useAuthStore((s) => s.setAccountTypeSelected);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState<string | null>(null);
@@ -39,11 +42,15 @@ export default function PatientOnboardingScreen() {
       getPatientProfileGap(supabase, userId),
     ]).then(([{ data }, gap]) => {
       if (cancelled) return;
-      if (data?.first_name) setFirstName(data.first_name);
-      if (data?.last_name) setLastName(data.last_name);
-      if (data?.city) setCity(data.city);
-      if (data?.date_of_birth) setDateOfBirth(data.date_of_birth);
       setReturningUserMissingDobOnly(gap.returningUserMissingDobOnly);
+      if (gap.returningUserMissingDobOnly) {
+        if (data?.first_name) setFirstName(data.first_name);
+        if (data?.last_name) setLastName(data.last_name);
+        if (data?.city) setCity(data.city);
+        if (data?.date_of_birth) setDateOfBirth(data.date_of_birth);
+      } else if (data?.city) {
+        setCity(data.city);
+      }
       setLoadingProfile(false);
     });
 
@@ -72,6 +79,8 @@ export default function PatientOnboardingScreen() {
       return;
     }
 
+    await markAccountTypeSelected(userId);
+    setAccountTypeSelected(true);
     setOnboarded(true);
     track({ name: 'onboarding_completed', properties: { account_type: 'patient' } });
     track({ name: 'profile_created', properties: { account_type: 'patient' } });
@@ -100,8 +109,12 @@ export default function PatientOnboardingScreen() {
         <Text className="text-sm text-text-secondary mt-2">
           {returningUserMissingDobOnly
             ? 'Profilul tău există deja — am adăugat data nașterii ca informație obligatorie. Alege-o din calendar ca să continui.'
-            : 'Numele și data nașterii sunt obligatorii ca să te recunoască clinicile în mesaje și notificări.'}
+            : 'Completează datele ca la înregistrarea cu email — numele și data nașterii sunt obligatorii.'}
         </Text>
+      </View>
+
+      <View className="bg-surface border border-border rounded-2xl overflow-hidden">
+        <AccountConnectedEmail compact />
       </View>
 
       <View className="gap-sm">

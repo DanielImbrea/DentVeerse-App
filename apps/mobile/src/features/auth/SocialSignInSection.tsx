@@ -14,6 +14,8 @@ import {
 } from '@dental/api';
 import type { AccountType } from '@dental/types';
 import { supabase } from '@mobile/lib/supabase';
+import { markAccountTypeSelected } from '@mobile/lib/accountTypeSelection';
+import { useAuthStore } from '@mobile/stores/authStore';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -36,6 +38,7 @@ type Props = {
 
 export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: Props) {
   const { t } = useTranslation();
+  const setAccountTypeSelected = useAuthStore((s) => s.setAccountTypeSelected);
   const [busy, setBusy] = useState<'google' | 'apple' | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [appleAvailable, setAppleAvailable] = useState(false);
@@ -62,6 +65,11 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
         await recordConsent(supabase, 'privacy_policy', TERMS_VERSION);
         const { error: typeError } = await setAccountType(supabase, accountType);
         if (typeError) throw typeError;
+        const { data: userData } = await supabase.auth.getUser();
+        if (userData.user) {
+          await markAccountTypeSelected(userData.user.id);
+          setAccountTypeSelected(true);
+        }
       }
       setErrorMessage(null);
       void provider;

@@ -15,6 +15,7 @@ import type { AccountType } from '@dental/types';
 import { supabase } from '@mobile/lib/supabase';
 import { AppTextInput } from '@mobile/components/AppTextInput';
 import { useAuthStore } from '@mobile/stores/authStore';
+import { markAccountTypeSelected } from '@mobile/lib/accountTypeSelection';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
 import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
 import { authScrollContentPadding } from '@mobile/features/auth/authScreenLayout';
@@ -33,6 +34,7 @@ export default function SignUpScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const setSession = useAuthStore((s) => s.setSession);
+  const setAccountTypeSelected = useAuthStore((s) => s.setAccountTypeSelected);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [accountType, setAccountTypeChoice] = useState<AccountType | null>(null);
@@ -89,6 +91,8 @@ export default function SignUpScreen() {
     }
 
     setSession(data.user.id, accountType);
+    setAccountTypeSelected(true);
+    await markAccountTypeSelected(data.user.id);
     setLoading(false);
     track({ name: 'signup_completed', properties: { account_type: accountType } });
 

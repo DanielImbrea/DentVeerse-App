@@ -5,8 +5,11 @@ interface AuthState {
   userId: string | null;
   accountType: AccountType | null;
   isOnboarded: boolean;
+  /** Explicit account-type pick (sign-up / choose-account-type) or legacy profile exists. */
+  accountTypeSelected: boolean;
   setSession: (userId: string | null, accountType: AccountType | null) => void;
   setOnboarded: (value: boolean) => void;
+  setAccountTypeSelected: (value: boolean) => void;
   reset: () => void;
 }
 
@@ -20,7 +23,10 @@ export const useAuthStore = create<AuthState>((set) => ({
   userId: null,
   accountType: null,
   isOnboarded: false,
+  accountTypeSelected: false,
   setSession: (userId, accountType) => set({ userId, accountType }),
   setOnboarded: (value) => set({ isOnboarded: value }),
-  reset: () => set({ userId: null, accountType: null, isOnboarded: false }),
+  setAccountTypeSelected: (value) => set({ accountTypeSelected: value }),
+  reset: () =>
+    set({ userId: null, accountType: null, isOnboarded: false, accountTypeSelected: false }),
 }));

@@ -6,6 +6,7 @@ import { setAccountType } from '@dental/api';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '@mobile/lib/supabase';
+import { markAccountTypeSelected } from '@mobile/lib/accountTypeSelection';
 import { useAuthStore } from '@mobile/stores/authStore';
 import type { AccountType } from '@dental/types';
 
@@ -45,13 +46,14 @@ export default function ChooseAccountTypeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const setSession = useAuthStore((s) => s.setSession);
+  const setAccountTypeSelected = useAuthStore((s) => s.setAccountTypeSelected);
   const userId = useAuthStore((s) => s.userId);
   const [selected, setSelected] = useState<AccountType | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   async function handleConfirm() {
-    if (!selected) return;
+    if (!selected || !userId) return;
     setLoading(true);
     setErrorMessage(null);
 
@@ -64,6 +66,8 @@ export default function ChooseAccountTypeScreen() {
     }
 
     setSession(userId, selected);
+    setAccountTypeSelected(true);
+    if (userId) await markAccountTypeSelected(userId);
 
     if (selected === 'patient') {
       router.replace('/(onboarding)/patient/profile');

@@ -8,6 +8,7 @@ import { Badge } from '@dental/ui';
 import type { Database } from '@dental/types';
 import { PostMediaImage } from '@mobile/components/PostMediaImage';
 import { ReactionPicker, reactionDisplayEmoji } from '@mobile/components/ReactionPicker';
+import { PostReactionLikersModal } from '@mobile/components/PostReactionLikersModal';
 import { formatFeedTimestamp } from '@mobile/lib/formatFeedDate';
 import { resolvePostMediaUrl } from '@mobile/lib/postMedia';
 
@@ -91,6 +92,7 @@ export function PostCard({
 }: PostCardProps) {
   const router = useRouter();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [likersOpen, setLikersOpen] = useState(false);
   const typeLabel = TYPE_LABELS[post.post_type] ?? post.post_type;
   const mediaUrl = getMediaUrl(post);
   const hasMedia = (post.post_media?.length ?? 0) > 0;
@@ -108,8 +110,13 @@ export function PostCard({
   }
 
   function handleReactionPress() {
-    if (userReaction === 'appreciate') onRemoveReaction?.(post.id);
+    if (userReaction) onRemoveReaction?.(post.id);
     else onSetReaction?.(post.id, 'appreciate');
+  }
+
+  function handleReactionLongPress() {
+    if ((post.like_count ?? 0) > 0) setLikersOpen(true);
+    else setPickerOpen(true);
   }
 
   return (
@@ -163,7 +170,7 @@ export function PostCard({
       <View className="flex-row items-center gap-sm px-lg pb-lg pt-0">
         <Pressable
           onPress={handleReactionPress}
-          onLongPress={() => setPickerOpen(true)}
+          onLongPress={handleReactionLongPress}
           delayLongPress={280}
           className={`flex-row items-center gap-1.5 rounded-full px-3 py-1.5 ${userReaction ? 'bg-primary/10' : 'bg-background'}`}
           accessibilityRole="button"
@@ -196,6 +203,7 @@ export function PostCard({
         onRemove={() => onRemoveReaction?.(post.id)}
         onClose={() => setPickerOpen(false)}
       />
+      <PostReactionLikersModal postId={post.id} visible={likersOpen} onClose={() => setLikersOpen(false)} />
     </View>
   );
 }
