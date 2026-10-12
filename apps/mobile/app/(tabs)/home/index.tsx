@@ -1,13 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect } from '@react-navigation/native';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchHomeFeedPage, fetchMyPostReactions, removePostReaction, savePost, setPostReaction, unsavePost } from '@dental/api';
 import { track } from '@dental/analytics';
 import type { PostReactionType } from '@dental/utils';
 import { EmptyState, ErrorState, SkeletonRow } from '@dental/ui';
-import { Link } from 'expo-router';
+import { Link, useFocusEffect } from 'expo-router';
 import { FeedFilterBar, DEFAULT_FEED_FILTERS, type FeedFiltersState } from '@mobile/components/FeedFilterBar';
 import { PostCard } from '@mobile/components/PostCard';
 import { supabase } from '@mobile/lib/supabase';
