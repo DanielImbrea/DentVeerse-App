@@ -19,6 +19,7 @@ import { markAccountTypeSelected } from '@mobile/lib/accountTypeSelection';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
 import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
 import { authScrollContentPadding } from '@mobile/features/auth/authScreenLayout';
+import { formatAuthErrorMessage } from '@mobile/lib/authErrors';
 import { useTranslation } from 'react-i18next';
 
 const TERMS_VERSION = '2026-08-12';
@@ -55,7 +56,7 @@ export default function SignUpScreen() {
     const { data, error } = await signUpWithEmail(supabase, email.trim(), password);
     if (error || !data.user) {
       setLoading(false);
-      setErrorMessage(error?.message ?? 'Înregistrarea a eșuat');
+      setErrorMessage(formatAuthErrorMessage(error?.message ?? 'Înregistrarea a eșuat'));
       return;
     }
 

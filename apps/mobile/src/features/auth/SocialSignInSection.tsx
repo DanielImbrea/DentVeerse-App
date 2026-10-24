@@ -16,6 +16,7 @@ import type { AccountType } from '@dental/types';
 import { supabase } from '@mobile/lib/supabase';
 import { markAccountTypeSelected } from '@mobile/lib/accountTypeSelection';
 import { useAuthStore } from '@mobile/stores/authStore';
+import { formatAuthErrorMessage } from '@mobile/lib/authErrors';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -80,7 +81,9 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
   useEffect(() => {
     if (googleResponse?.type !== 'success') {
       if (googleResponse?.type === 'error') {
-        setErrorMessage(googleResponse.error?.message ?? t('auth.signIn.socialFailed'));
+        setErrorMessage(
+          formatAuthErrorMessage(googleResponse.error?.message ?? t('auth.signIn.socialFailed'))
+        );
         setBusy(null);
       }
       return;
@@ -103,7 +106,7 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
         if (error) throw error;
         await finishSocialSession('google');
       } catch (err) {
-        setErrorMessage(err instanceof Error ? err.message : t('auth.signIn.socialFailed'));
+        setErrorMessage(formatAuthErrorMessage(err instanceof Error ? err.message : t('auth.signIn.socialFailed')));
       } finally {
         setBusy(null);
       }

@@ -15,7 +15,7 @@
   "auth.signIn.socialNotConfigured": "Google/Apple: configurează EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID în EAS și providerii în Supabase (vezi docs/23-ACTIVARE-GOOGLE-APPLE-LOGIN.md).",
   "auth.signIn.socialFailed": "Autentificarea socială a eșuat. Încearcă din nou.",
   "auth.signUp.pickAccountType": "Alege mai întâi Pacient, Clinică sau Laborator.",
-  "auth.signIn.networkError": "Nu mă pot conecta la server. Verifică Wi‑Fi și că Supabase rulează pe Mac.",
+  "auth.signIn.networkError": "Nu ne putem conecta la serverul DentVeerse. Verifică internetul.",
   "action.save": "Salvează",
   "action.cancel": "Anulează",
   "action.retry": "Încearcă din nou",

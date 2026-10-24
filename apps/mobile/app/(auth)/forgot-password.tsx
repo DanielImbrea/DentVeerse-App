@@ -5,6 +5,7 @@ import { sendPasswordReset } from '@dental/api';
 import { ScreenShell } from '@mobile/components/ScreenShell';
 import { AppTextInput } from '@mobile/components/AppTextInput';
 import { supabase } from '@mobile/lib/supabase';
+import { formatAuthErrorMessage } from '@mobile/lib/authErrors';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function ForgotPasswordScreen() {
     const { error } = await sendPasswordReset(supabase, email.trim());
     setLoading(false);
     if (error) {
-      setErrorMessage(error.message);
+      setErrorMessage(formatAuthErrorMessage(error.message));
       return;
     }
     setSent(true);

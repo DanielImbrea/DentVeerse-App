@@ -15,6 +15,7 @@ import { AppTextInput } from '@mobile/components/AppTextInput';
 import { AuthBrandHeader } from '@mobile/components/AuthBrandHeader';
 import { SocialSignInSection } from '@mobile/features/auth/SocialSignInSection';
 import { authScrollContentPadding } from '@mobile/features/auth/authScreenLayout';
+import { formatAuthErrorMessage } from '@mobile/lib/authErrors';
 
 export default function SignInScreen() {
   const { t } = useTranslation();
@@ -34,12 +35,12 @@ export default function SignInScreen() {
     try {
       const { error } = await signInWithEmail(supabase, email.trim(), password);
       if (error) {
-        setErrorMessage(error.message);
+        setErrorMessage(formatAuthErrorMessage(error.message));
         return;
       }
       // Navigation is handled by app/_layout.tsx once the Supabase session is resolved.
-    } catch {
-      setErrorMessage(t('auth.signIn.networkError'));
+    } catch (err) {
+      setErrorMessage(formatAuthErrorMessage(err instanceof Error ? err.message : t('auth.signIn.networkError')));
     } finally {
       setLoading(false);
     }
