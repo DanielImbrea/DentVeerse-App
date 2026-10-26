@@ -21,6 +21,7 @@ import { getNotificationRoute } from '@mobile/lib/notificationRoutes';
 import { loadAppFonts } from '@mobile/lib/fonts';
 import { isSupabaseConfigured } from '@mobile/lib/supabase';
 import { SupabaseConfigErrorScreen } from '@mobile/components/SupabaseConfigErrorScreen';
+import { withTimeout } from '@mobile/lib/promiseTimeout';
 
 try {
   initMobileMonitoring();
@@ -218,22 +219,31 @@ function RootLayoutApp() {
       }
     }
 
-    supabase.auth
-      .getSession()
-      .then(async ({ data }) => {
-        await resolveSession(data.session?.user.id ?? null);
-      })
-      .catch(async (err) => {
-        console.warn('[auth] getSession failed — clearing stored session:', err);
+    void (async () => {
+      try {
+        const { data } = await withTimeout(
+          supabase.auth.getSession(),
+          12_000,
+          'Session check timed out'
+        );
+        await withTimeout(resolveSession(data.session?.user.id ?? null), 12_000, 'Profile check timed out');
+      } catch (err) {
+        console.warn('[auth] startup session failed — clearing stored session:', err);
         try {
           const keys = await AsyncStorage.getAllKeys();
           await AsyncStorage.multiRemove(keys.filter((k) => k.includes('auth-token') || k.includes('supabase')));
         } catch {
           /* ignore */
         }
-        await resolveSession(null);
-      })
-      .finally(() => setInitializing(false));
+        try {
+          await resolveSession(null);
+        } catch {
+          /* ignore */
+        }
+      } finally {
+        setInitializing(false);
+      }
+    })();
 
     const { data: subscription } = supabase.auth.onAuthStateChange(async (_event, session) => {
       await resolveSession(session?.user.id ?? null);

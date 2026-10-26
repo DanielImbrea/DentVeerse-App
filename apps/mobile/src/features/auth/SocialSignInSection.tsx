@@ -55,6 +55,13 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
     void AppleAuthentication.isAvailableAsync().then(setAppleAvailable);
   }, []);
 
+  // OAuth sheet abandoned — avoid infinite spinner on Google button.
+  useEffect(() => {
+    if (!busy) return;
+    const timeout = setTimeout(() => setBusy(null), 90_000);
+    return () => clearTimeout(timeout);
+  }, [busy]);
+
   const finishSocialSession = useCallback(
     async (provider: 'google' | 'apple') => {
       if (mode === 'sign-up') {
@@ -100,6 +107,7 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
       try {
         if (mode === 'sign-up' && !accountType) {
           onNeedsAccountType?.();
+          setBusy(null);
           return;
         }
         const { error } = await signInWithGoogleIdToken(supabase, idToken);
@@ -128,8 +136,17 @@ export function SocialSignInSection({ mode, accountType, onNeedsAccountType }: P
     }
     setErrorMessage(null);
     setBusy('google');
-    const result = await promptGoogleAsync();
-    if (result.type === 'dismiss' || result.type === 'cancel') {
+    try {
+      const result = await promptGoogleAsync();
+      if (result.type === 'success') {
+        return;
+      }
+      if (result.type === 'error') {
+        setErrorMessage(formatAuthErrorMessage(result.error?.message ?? t('auth.signIn.socialFailed')));
+      }
+      setBusy(null);
+    } catch (err) {
+      setErrorMessage(formatAuthErrorMessage(err instanceof Error ? err.message : t('auth.signIn.socialFailed')));
       setBusy(null);
     }
   }

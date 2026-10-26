@@ -106,15 +106,17 @@ export default function SignUpScreen() {
     }
   }
 
-  const canSubmit = !!email && !!password && !!accountType;
-
   return (
-    <KeyboardAvoidingView className="flex-1 bg-background" behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      className="flex-1 bg-background"
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top : 0}
+    >
       <ScrollView
-        contentContainerStyle={authScrollContentPadding(insets)}
+        contentContainerStyle={authScrollContentPadding(insets, { centerVertically: false })}
         contentContainerClassName="px-xl gap-sm"
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
       >
         <AuthBrandHeader
           logoSize={72}
@@ -186,6 +188,24 @@ export default function SignUpScreen() {
             />
           </View>
 
+          <Button
+            label="Creează cont"
+            onPress={() => {
+              if (!accountType) {
+                setErrorMessage('Alege tipul de cont (Pacient, Clinică sau Laborator).');
+                return;
+              }
+              if (!email.trim() || !password) {
+                setErrorMessage('Completează emailul și parola.');
+                return;
+              }
+              void handleSignUp();
+            }}
+            loading={loading}
+            disabled={loading}
+            className="w-full self-stretch min-h-[52px]"
+          />
+
           {successMessage ? (
             <View className="bg-success/10 border border-success/25 rounded-xl px-md py-3">
               <Text className="text-sm text-success text-center">{successMessage}</Text>
@@ -201,8 +221,6 @@ export default function SignUpScreen() {
           <Text className="text-xs text-text-secondary text-center">
             Continuând, accepți Termenii și Politica de confidențialitate.
           </Text>
-
-          <Button label="Continuă" onPress={handleSignUp} loading={loading} disabled={!canSubmit} className="w-full self-stretch" />
 
           <View className="flex-row items-center gap-md pt-1">
             <View className="flex-1 h-px bg-border" />
